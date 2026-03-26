@@ -1,3 +1,4 @@
 <Solution>
-  <Project Path="TheReviewer/TheReviewer.csproj" />
+  <Project Path="TheReviewer.Data/TheReviewer.Data.csproj" Id="2fa42362-0d5e-4e25-a9c2-a8acda929ba5" />
+  <Project Path="TheReviewer.Frontend/TheReviewer.Frontend.csproj" Id="4d4a039e-6662-45f1-b0b4-950d6aac607a" />
 </Solution>
