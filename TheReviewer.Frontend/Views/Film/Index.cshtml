@@ -1,0 +1,76 @@
+@using TheReviewer.Frontend.Models
+@model FilmViewModel
+
+@{
+    ViewData["Title"] = "Film Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Films</h1>
+
+<p>
+    <a asp-controller="Film" asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Publisher</th>
+            <th>Reviewer</th>
+            <th>Score</th>
+            <th>Review</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Films != null && Model.Films.Any())
+        {
+            foreach (var film in Model.Films)
+            {
+                var filmReviews = Model.Reviews?.Where(r => r.FilmId == film.Id).ToList() ?? new List<TheReviewer.Models.ReviewModel>();
+                if (filmReviews.Any())
+                {
+                    foreach (var review in filmReviews)
+                    {
+                        var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
+                        <tr>
+                            <td>@film.Name</td>
+                            <td>@film.Publisher</td>
+                            <td>@(reviewer?.Name ?? "Unknown")</td>
+                            <td>@review.Rating</td>
+                            <td>@review.Content</td>
+                            <td>
+                                <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
+                                <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
+                                <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>@film.Name</td>
+                        <td>@film.Publisher</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>No reviews yet</td>
+                        <td>
+                            <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
+                            <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
+                            <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">No films found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

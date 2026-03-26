@@ -1,0 +1,54 @@
+﻿@* @using TheReviewer.Frontend.Models
+@model FilmModel
+@{
+    ViewData["Title"] = "Create Review";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create Review</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label">Naam van de film</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="ReviewerName" class="control-label">Naam van de reviewer</label>
+                <input asp-for="ReviewerName" class="form-control" />
+                <span asp-validation-for="ReviewerName" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Score" class="control-label">Score</label>
+                <input asp-for="Score" type="number" class="form-control" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label">Beschrijving</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+ *@
