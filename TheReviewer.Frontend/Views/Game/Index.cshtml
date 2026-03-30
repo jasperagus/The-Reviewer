@@ -1,0 +1,75 @@
+@using TheReviewer.Frontend.Models
+@model GameViewModel
+
+@{
+    ViewData["Title"] = "Game Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Games</h1>
+
+<p>
+    <a asp-controller="Game" asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Publisher</th>
+            <th>Reviewer</th>
+            <th>Score</th>
+            <th>Review</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Games != null && Model.Games.Any())
+        {
+            foreach (var game in Model.Games)
+            {
+                var gameReviews = Model.Reviews?.Where(r => r.GameId == game.Id).ToList() ?? new List<TheReviewer.Models.ReviewModel>();
+                if (gameReviews.Any())
+                {
+                    foreach (var review in gameReviews)
+                    {
+                        var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
+                        <tr>
+                            <td>@game.Name</td>
+                            <td>@game.Publisher</td>
+                            <td>@(reviewer?.Name ?? "Unknown")</td>
+                            <td>@review.Rating</td>
+                            <td>@review.Content</td>
+                            <td>
+                                <a asp-controller="Game" asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
+                                <a asp-controller="Game" asp-action="Details" asp-route-id="@game.Id">Details</a> |
+                                <a asp-controller="Game" asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>@game.Name</td>
+                        <td>@game.Publisher</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>No reviews yet</td>
+                        <td>
+                            <a asp-controller="Game" asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
+                            <a asp-controller="Game" asp-action="Details" asp-route-id="@game.Id">Details</a> |
+                            <a asp-controller="Game" asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">No games found.</td>
+            </tr>
+        }
+    </tbody>
+</table>

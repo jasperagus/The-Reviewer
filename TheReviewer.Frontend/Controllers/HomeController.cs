@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TheReviewer.Models;
 
-namespace TheReviewer.Controllers
+namespace TheReviewer.Frontend.Controllers
 {
     public class HomeController : Controller
     {
