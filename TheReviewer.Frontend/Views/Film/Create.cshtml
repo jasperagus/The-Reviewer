@@ -1,44 +1,43 @@
-﻿@* @using TheReviewer.Frontend.Models
-@model FilmModel
+﻿@using TheReviewer.Frontend.Models
+@model CreateReviewViewModel
 @{
-    ViewData["Title"] = "Create Review";
+    ViewData["Title"] = "Create Film Review";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create Review</h1>
+<h1>Create Film Review</h1>
 
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
+
             <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label">Naam van de film</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="FilmId" class="control-label">Films</label>
+                <select asp-for="FilmId" asp-items="Model.FilmItems" class="form-control"></select>
             </div>
-            
+
             <div class="form-group mb-3">
-                <label asp-for="ReviewerName" class="control-label">Naam van de reviewer</label>
-                <input asp-for="ReviewerName" class="form-control" />
-                <span asp-validation-for="ReviewerName" class="text-danger"></span>
+                <label asp-for="ReviewerId" class="control-label">Reviewer</label>
+                <select asp-for="ReviewerId" asp-items="Model.ReviewerItems" class="form-control"></select>
             </div>
-            
+
             <div class="form-group mb-3">
                 <label asp-for="Score" class="control-label">Score</label>
-                <input asp-for="Score" type="number" class="form-control" />
+                <input asp-for="Score" type="number" class="form-control"/>
                 <span asp-validation-for="Score" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label">Beschrijving</label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Content" class="control-label">Beschrijving</label>
+                <textarea asp-for="Content" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>
@@ -49,6 +48,6 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
- *@
+
