@@ -5,9 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<FilmRepository>();
-builder.Services.AddScoped<ReviewRepository>();
-builder.Services.AddScoped<ReviewerRepository>();
+builder.Services.AddScoped<TheReviewer.Data.Repositories.GameRepository>();
+builder.Services.AddScoped<TheReviewer.Data.Repositories.FilmRepository>();
+builder.Services.AddScoped<TheReviewer.Data.Repositories.ReviewRepository>();
+builder.Services.AddScoped<TheReviewer.Data.Repositories.ReviewerRepository>();
 
 var app = builder.Build();
 
