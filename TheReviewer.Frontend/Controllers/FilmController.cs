@@ -23,10 +23,9 @@ namespace TheReviewer.Frontend.Controllers
 
         public IActionResult Index()
         {
-            var repository = new FilmRepository();
-            var films = repository.GetAll();
-            var reviewers = new ReviewerRepository().GetAll();
-            var reviews = new ReviewRepository().GetAll();
+            var films = _filmRepository.GetAll();
+            var reviewers = _reviewerRepository.GetAll();
+            var reviews = _reviewRepository.GetAll();
 
             return View(new FilmViewModel(films, reviewers, reviews));
         }

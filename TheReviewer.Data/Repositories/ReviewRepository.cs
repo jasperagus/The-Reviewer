@@ -9,10 +9,16 @@ namespace TheReviewer.Data.Repositories
 {
     public class ReviewRepository
     {
+        private  string _connection;
+        public ReviewRepository(string connectionString)
+        {
+            _connection = connectionString;
+            
+        }
         public List<ReviewModel> GetAll()
         {
             var query = "SELECT * FROM Review";
-            using var connection = new SqlConnection("Server=mssqlstud.fhict.local;Database=dbi580730_reviewer;User Id=dbi580730_reviewer;Password=jasper;TrustServerCertificate=true;");
+            using var connection = new SqlConnection(_connection);
             using var command = new SqlCommand(query, connection);
             connection.Open();
             using var reader = command.ExecuteReader();
@@ -44,7 +50,7 @@ namespace TheReviewer.Data.Repositories
         public void Add(ReviewDTO review)
         {
             var query = "INSERT INTO Review (content, rating, reviewer_id, film_id, game_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @film_id, @game_id, @created_at, @updated_at)";
-            using var connection = new SqlConnection("Server=mssqlstud.fhict.local;Database=dbi580730_reviewer;User Id=dbi580730_reviewer;Password=jasper;TrustServerCertificate=true;");
+            using var connection = new SqlConnection(_connection);
             using var command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@content", review.Content);
             command.Parameters.AddWithValue("@rating", review.Rating);
