@@ -14,23 +14,23 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group mb-3">
-                <label asp-for="GameId" class="control-label">Games</label>
+                <label asp-for="GameId" class="control-label">Select a game to review</label>
                 <select asp-for="GameId" asp-items="Model.GameItems" class="form-control"></select>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="ReviewerId" class="control-label">Reviewer</label>
+                <label asp-for="ReviewerId" class="control-label">Select a reviewer</label>
                 <select asp-for="ReviewerId" asp-items="Model.ReviewerItems" class="form-control"></select>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Score" class="control-label">Score</label>
+                <label asp-for="Score" class="control-label">Enter a score</label>
                 <input asp-for="Score" type="number" class="form-control" />
                 <span asp-validation-for="Score" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Content" class="control-label">Beschrijving</label>
+                <label asp-for="Content" class="control-label">What do you want to add to your review?</label>
                 <textarea asp-for="Content" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
