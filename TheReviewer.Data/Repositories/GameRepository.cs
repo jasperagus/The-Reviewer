@@ -8,10 +8,16 @@ namespace TheReviewer.Data.Repositories
 {
     public class GameRepository
     {
+        private  string _connection;
+        public GameRepository(string connectionString)
+        {
+            _connection = connectionString;
+            
+        }
         public List<GameModel> GetAll()
         {
             var query = "SELECT * from Game";
-            using var connection = new SqlConnection("Server=mssqlstud.fhict.local;Database=dbi580730_reviewer;User Id=dbi580730_reviewer;Password=jasper;TrustServerCertificate=true;");
+            using var connection = new SqlConnection(_connection);
             using var command = new SqlCommand(query, connection);
             connection.Open();
             using var reader = command.ExecuteReader();

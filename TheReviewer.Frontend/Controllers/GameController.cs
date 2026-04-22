@@ -22,9 +22,9 @@ namespace TheReviewer.Frontend.Controllers
         }
         public IActionResult Index()
         {
-            var games = new GameRepository().GetAll();
-            var reviewers = new ReviewerRepository().GetAll();
-            var reviews = new ReviewRepository().GetAll();
+            var games = _gameRepository.GetAll();
+            var reviewers =  _reviewerRepository.GetAll();
+            var reviews = _reviewRepository.GetAll();
 
             return View(new GameViewModel(games, reviewers, reviews));
         }
@@ -32,8 +32,8 @@ namespace TheReviewer.Frontend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var games = new GameRepository().GetAll();
-            var reviewers = new ReviewerRepository().GetAll();
+            var games = _gameRepository.GetAll();
+            var reviewers = _reviewerRepository.GetAll();
 
             var gameSelectItems = games.ConvertAll(r => new SelectListItem()
             {

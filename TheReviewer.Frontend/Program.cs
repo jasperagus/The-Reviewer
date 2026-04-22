@@ -1,14 +1,14 @@
 using TheReviewer.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetValue<string>("ConnectionString");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddScoped<TheReviewer.Data.Repositories.GameRepository>();
-builder.Services.AddScoped<TheReviewer.Data.Repositories.FilmRepository>();
-builder.Services.AddScoped<TheReviewer.Data.Repositories.ReviewRepository>();
-builder.Services.AddScoped<TheReviewer.Data.Repositories.ReviewerRepository>();
+builder.Services.AddScoped(_ => new GameRepository(connectionString));
+builder.Services.AddScoped(_ => new FilmRepository(connectionString));
+builder.Services.AddScoped(_ => new ReviewerRepository(connectionString));
+builder.Services.AddScoped(_ => new ReviewRepository(connectionString));
 
 var app = builder.Build();
 
