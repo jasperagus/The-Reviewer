@@ -59,6 +59,7 @@ namespace TheReviewer.Frontend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateReviewViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 var reviewDTO = new ReviewDTO
@@ -73,7 +74,26 @@ namespace TheReviewer.Frontend.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            PopulateCreateDropdowns(model);
             return View(model);
+        }
+
+        private void PopulateCreateDropdowns(CreateReviewViewModel model)
+        {
+            var films = _filmRepository.GetAll();
+            var reviewers = _reviewerRepository.GetAll();
+
+            model.FilmItems = films.ConvertAll(r => new SelectListItem()
+            {
+                Value = r.Id.ToString(),
+                Text = r.Name
+            });
+
+            model.ReviewerItems = reviewers.ConvertAll(r => new SelectListItem()
+            {
+                Value = r.Id.ToString(),
+                Text = r.Name
+            });
         }
     }
 }

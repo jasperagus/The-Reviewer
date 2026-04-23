@@ -16,7 +16,10 @@
 
             <div class="form-group mb-3">
                 <label asp-for="FilmId" class="control-label">Select a film</label>
-                <select asp-for="FilmId" asp-items="Model.FilmItems" class="form-control"></select>
+                <select asp-for="FilmId" asp-items="Model.FilmItems" class="form-control">
+                    <option value="">-- Select a film --</option>
+                </select>
+                <span asp-validation-for="FilmId" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">

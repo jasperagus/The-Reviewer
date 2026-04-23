@@ -15,7 +15,10 @@
 
             <div class="form-group mb-3">
                 <label asp-for="GameId" class="control-label">Select a game to review</label>
-                <select asp-for="GameId" asp-items="Model.GameItems" class="form-control"></select>
+                <select asp-for="GameId" asp-items="Model.GameItems" class="form-control">
+                <option value="">-- Select a game --</option>
+                </select>
+
             </div>
 
             <div class="form-group mb-3">
