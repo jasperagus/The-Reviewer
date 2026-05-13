@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TheReviewer.Models;
+using TheReviewer.Data.Models;
 
 namespace TheReviewer.Frontend.Controllers
 {

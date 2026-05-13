@@ -1,19 +1,17 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TheReviewer.Models;
+using TheReviewer.Data.Models;
 
 namespace TheReviewer.Data.Repositories
 {
     public class GameRepository
     {
-        private  string _connection;
+        private string _connection;
+
         public GameRepository(string connectionString)
         {
             _connection = connectionString;
-            
         }
+
         public List<GameModel> GetAll()
         {
             var query = "SELECT * from Game";
@@ -29,9 +27,11 @@ namespace TheReviewer.Data.Repositories
             var games = new List<GameModel>();
             while (reader.Read())
             {
-                var game = new GameModel(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetDateTime(4), reader.GetDateTime(5));
+                var game = new GameModel(reader.GetInt32(0), reader.GetString(1), reader.GetString(2),
+                    reader.GetInt32(3), reader.GetDateTime(4), reader.GetDateTime(5));
                 games.Add(game);
             }
+
             return games;
         }
     }

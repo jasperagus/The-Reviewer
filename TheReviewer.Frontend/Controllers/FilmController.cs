@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTO;
 using TheReviewer.Data.Repositories;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Models;
 
 namespace TheReviewer.Frontend.Controllers
 {
@@ -58,7 +56,6 @@ namespace TheReviewer.Frontend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateReviewViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var reviewDTO = new ReviewDTO

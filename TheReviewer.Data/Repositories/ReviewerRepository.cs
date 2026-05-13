@@ -1,34 +1,31 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using TheReviewer.Models;
+using TheReviewer.Data.Models;
 
 namespace TheReviewer.Data.Repositories
 {
     public class ReviewerRepository
     {
-        private  string _connection;
+        private string _connection;
+
         public ReviewerRepository(string connectionString)
         {
             _connection = connectionString;
-            
         }
+
         public List<ReviewerModel> GetAll()
         {
             var query = "SELECT * from Reviewer";
-            
+
             using var connection = new SqlConnection(_connection);
             using var command = new SqlCommand(query, connection);
             connection.Open();
-            
+
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
                 return new List<ReviewerModel>();
             }
-            
+
             var reviewers = new List<ReviewerModel>();
             while (reader.Read())
             {
@@ -41,6 +38,7 @@ namespace TheReviewer.Data.Repositories
                 );
                 reviewers.Add(reviewer);
             }
+
             return reviewers;
         }
     }

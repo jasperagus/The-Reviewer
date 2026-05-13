@@ -1,4 +1,4 @@
-﻿namespace TheReviewer.Models
+﻿namespace TheReviewer.Data.Models
 {
     public class GameModel
     {

@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.Repositories;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Models;
 using TheReviewer.Data.DTO;
 
 namespace TheReviewer.Frontend.Controllers
 {
-    public class GameController : Controller    
+    public class GameController : Controller
     {
         private readonly GameRepository _gameRepository;
         private readonly ReviewRepository _reviewRepository;
@@ -20,10 +18,11 @@ namespace TheReviewer.Frontend.Controllers
             _reviewRepository = reviewRepository;
             _reviewerRepository = reviewerRepository;
         }
+
         public IActionResult Index()
         {
             var games = _gameRepository.GetAll();
-            var reviewers =  _reviewerRepository.GetAll();
+            var reviewers = _reviewerRepository.GetAll();
             var reviews = _reviewRepository.GetAll();
 
             return View(new GameViewModel(games, reviewers, reviews));
@@ -67,7 +66,7 @@ namespace TheReviewer.Frontend.Controllers
                     ReviewerId = model.ReviewerId,
                     GameId = model.GameId
                 };
-                
+
                 _reviewRepository.Add(reviewDTO);
 
                 return RedirectToAction(nameof(Index));
