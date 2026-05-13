@@ -1,37 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TheReviewer.Data.DTO;
-using TheReviewer.Data.Repositories;
+using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
+using TheReviewer.Logic.Interfaces;
 
 namespace TheReviewer.Frontend.Controllers
 {
     public class FilmController : Controller
     {
-        private readonly FilmRepository _filmRepository;
-        private readonly ReviewRepository _reviewRepository;
-        private readonly ReviewerRepository _reviewerRepository;
+        private readonly IFilmService _filmService;
+        private readonly IReviewService _reviewService;
+        private readonly IReviewerService _reviewerService;
 
-        public FilmController(FilmRepository filmRepository, ReviewRepository reviewRepository, ReviewerRepository reviewerRepository)
+        public FilmController(IFilmService filmService, IReviewService reviewService, IReviewerService reviewerService)
         {
-            _filmRepository = filmRepository;
-            _reviewRepository = reviewRepository;
-            _reviewerRepository = reviewerRepository;
+            _filmService = filmService;
+            _reviewService = reviewService;
+            _reviewerService = reviewerService;
         }
 
         public IActionResult Index()
         {
-            var films = _filmRepository.GetAll();
-            var reviewers = _reviewerRepository.GetAll();
-            var reviews = _reviewRepository.GetAll();
+            var films = _filmService.GetAll();
+            var reviewers = _reviewerService.GetAll();
+            var reviews = _reviewService.GetAll();
 
             return View(new FilmViewModel(films, reviewers, reviews));
         }
 
         public IActionResult Create()
         {
-            var films = _filmRepository.GetAll();
-            var reviewers = _reviewerRepository.GetAll();
+            var films = _filmService.GetAll();
+            var reviewers = _reviewerService.GetAll();
 
             var filmSelectItems = films.ConvertAll(r => new SelectListItem()
             {
@@ -58,14 +58,14 @@ namespace TheReviewer.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var reviewDTO = new ReviewDTO
-                {
-                    Content = model.Content,
-                    Rating = model.Score,
-                    ReviewerId = model.ReviewerId,
-                    FilmId = model.FilmId
-                };
-                _reviewRepository.Add(reviewDTO);
+                var reviewDTO = new CreateReviewDTO(
+                    model.Content,
+                    model.Score,
+                    model.ReviewerId,
+                    model.FilmId,
+                    model.GameId
+                );
+                _reviewService.Add(reviewDTO);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -76,8 +76,8 @@ namespace TheReviewer.Frontend.Controllers
 
         private void PopulateCreateDropdowns(CreateReviewViewModel model)
         {
-            var films = _filmRepository.GetAll();
-            var reviewers = _reviewerRepository.GetAll();
+            var films = _filmService.GetAll();
+            var reviewers = _reviewerService.GetAll();
 
             model.FilmItems = films.ConvertAll(r => new SelectListItem()
             {

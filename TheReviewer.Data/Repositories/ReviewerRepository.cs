@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using TheReviewer.Data.Models;
+using TheReviewer.Data.DTOs;
+using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories
 {
-    public class ReviewerRepository
+    public class ReviewerRepository : IReviewerRepository
     {
         private readonly string _connectionString;
 
@@ -12,7 +13,7 @@ namespace TheReviewer.Data.Repositories
             _connectionString = connectionString;
         }
 
-        public List<ReviewerModel> GetAll()
+        public List<GetReviewerDTO> GetAll()
         {
             const string query = "SELECT id, name, birthdate, created_at, updated_at from Reviewer";
 
@@ -23,13 +24,13 @@ namespace TheReviewer.Data.Repositories
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
-                return new List<ReviewerModel>();
+                return new List<GetReviewerDTO>();
             }
 
-            var reviewers = new List<ReviewerModel>();
+            var reviewers = new List<GetReviewerDTO>();
             while (reader.Read())
             {
-                var reviewer = new ReviewerModel(
+                var reviewer = new GetReviewerDTO(
                     reader.GetInt32(0),
                     reader.GetString(1),
                     DateOnly.FromDateTime(reader.GetDateTime(2)),

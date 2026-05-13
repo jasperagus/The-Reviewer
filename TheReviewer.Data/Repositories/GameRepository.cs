@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using TheReviewer.Data.Models;
+using TheReviewer.Data.DTOs;
+using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories
 {
-    public class GameRepository
+    public class GameRepository : IGameRepository
     {
         private readonly string _connectionString;
 
@@ -12,7 +13,7 @@ namespace TheReviewer.Data.Repositories
             _connectionString = connectionString;
         }
 
-        public List<GameModel> GetAll()
+        public List<GetGameDTO> GetAll()
         {
             const string query = "SELECT id, name, publisher, score, created_at, updated_at from Game";
 
@@ -23,13 +24,13 @@ namespace TheReviewer.Data.Repositories
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
-                return new List<GameModel>();
+                return new List<GetGameDTO>();
             }
 
-            var games = new List<GameModel>();
+            var games = new List<GetGameDTO>();
             while (reader.Read())
             {
-                var game = new GameModel(
+                var game = new GetGameDTO(
                     reader.GetInt32(0),
                     reader.GetString(1),
                     reader.GetString(2),

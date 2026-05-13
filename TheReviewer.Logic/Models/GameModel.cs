@@ -1,18 +1,20 @@
-﻿namespace TheReviewer.Data.Models
+﻿namespace TheReviewer.Logic.Models
 {
-    public class ReviewerModel
+    public class GameModel
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public DateOnly Birthdate { get; private set; }
+        public string Publisher { get; private set; }
+        public int Score { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        public ReviewerModel(int id, string name, DateOnly birthdate, DateTime createdAt, DateTime updatedAt)
+        public GameModel(int id, string name, string publisher, int score, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             Name = name;
-            Birthdate = birthdate;
+            Publisher = publisher;
+            Score = score;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
         }

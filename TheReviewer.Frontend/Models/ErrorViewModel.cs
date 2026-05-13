@@ -4,6 +4,6 @@ namespace TheReviewer.Frontend.Models
     {
         public string? RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShouldShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
 }

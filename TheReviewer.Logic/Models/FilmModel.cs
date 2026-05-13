@@ -1,6 +1,6 @@
-﻿namespace TheReviewer.Data.Models
+﻿namespace TheReviewer.Logic.Models
 {
-    public class GameModel
+    public class FilmModel
     {
         public int Id { get; private set; }
         public string Name { get; private set; }
@@ -9,7 +9,7 @@
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        public GameModel(int id, string name, string publisher, int score, DateTime createdAt, DateTime updatedAt)
+        public FilmModel(int id, string name, string publisher, int score, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             Name = name;

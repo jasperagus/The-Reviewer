@@ -1,29 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TheReviewer.Data.DTOs;
 using TheReviewer.Data.Repositories;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Data.DTO;
+using TheReviewer.Logic.Interfaces;
+using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers
 {
     public class GameController : Controller
     {
-        private readonly GameRepository _gameRepository;
-        private readonly ReviewRepository _reviewRepository;
-        private readonly ReviewerRepository _reviewerRepository;
+        private readonly GameService _gameService;
+        private readonly IReviewService _reviewService;
+        private readonly IReviewerService _reviewerService;
 
-        public GameController(GameRepository gameRepository, ReviewRepository reviewRepository, ReviewerRepository reviewerRepository)
+        public GameController(GameService gameService, IReviewService reviewService, IReviewerService reviewerService)
         {
-            _gameRepository = gameRepository;
-            _reviewRepository = reviewRepository;
-            _reviewerRepository = reviewerRepository;
+            _gameService = gameService;
+            _reviewService = reviewService;
+            _reviewerService = reviewerService;
         }
 
         public IActionResult Index()
         {
-            var games = _gameRepository.GetAll();
-            var reviewers = _reviewerRepository.GetAll();
-            var reviews = _reviewRepository.GetAll();
+            var games = _gameService.GetAll();
+            var reviewers = _reviewerService.GetAll();
+            var reviews = _reviewService.GetAll();
 
             return View(new GameViewModel(games, reviewers, reviews));
         }
@@ -31,8 +33,8 @@ namespace TheReviewer.Frontend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            var games = _gameRepository.GetAll();
-            var reviewers = _reviewerRepository.GetAll();
+            var games = _gameService.GetAll();
+            var reviewers = _reviewerService.GetAll();
 
             var gameSelectItems = games.ConvertAll(r => new SelectListItem()
             {
@@ -59,15 +61,15 @@ namespace TheReviewer.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var reviewDTO = new ReviewDTO
-                {
-                    Content = model.Content,
-                    Rating = model.Score,
-                    ReviewerId = model.ReviewerId,
-                    GameId = model.GameId
-                };
+                var reviewDTO = new CreateReviewDTO(
+                    model.Content,
+                    model.Score,
+                    model.ReviewerId,
+                    model.FilmId,
+                    model.GameId
+                );
 
-                _reviewRepository.Add(reviewDTO);
+                _reviewService.Add(reviewDTO);
 
                 return RedirectToAction(nameof(Index));
             }

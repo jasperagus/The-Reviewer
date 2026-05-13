@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using TheReviewer.Data.Models;
+using TheReviewer.Data.DTOs;
+using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories
 {
-    public class FilmRepository
+    public class FilmRepository : IFilmRepository
     {
         private readonly string _connectionString;
 
@@ -12,7 +13,7 @@ namespace TheReviewer.Data.Repositories
             _connectionString = connectionString;
         }
 
-        public List<FilmModel> GetAll()
+        public List<GetFilmDTO> GetAll()
         {
             const string query = "SELECT id, name, publisher, score, created_at, updated_at from Film";
 
@@ -23,13 +24,13 @@ namespace TheReviewer.Data.Repositories
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
-                return new List<FilmModel>();
+                return new List<GetFilmDTO>();
             }
 
-            var films = new List<FilmModel>();
+            var films = new List<GetFilmDTO>();
             while (reader.Read())
             {
-                var film = new FilmModel(
+                var film = new GetFilmDTO(
                     reader.GetInt32(0),
                     reader.GetString(1),
                     reader.GetString(2),

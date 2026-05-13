@@ -1,10 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using TheReviewer.Data.DTO;
-using TheReviewer.Data.Models;
+using TheReviewer.Data.DTOs;
+using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories
 {
-    public class ReviewRepository
+    public class ReviewRepository : IReviewRepository
     {
         private readonly string _connectionString;
 
@@ -13,7 +13,7 @@ namespace TheReviewer.Data.Repositories
             _connectionString = connectionString;
         }
 
-        public List<ReviewModel> GetAll()
+        public List<GetReviewDTO> GetAll()
         {
             const string query = "SELECT id, content, rating, reviewer_id, film_id, game_id, created_at, updated_at FROM Review";
 
@@ -24,10 +24,10 @@ namespace TheReviewer.Data.Repositories
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
-                return new List<ReviewModel>();
+                return new List<GetReviewDTO>();
             }
 
-            var reviews = new List<ReviewModel>();
+            var reviews = new List<GetReviewDTO>();
             while (reader.Read())
             {
                 int? filmId = reader.IsDBNull(reader.GetOrdinal("film_id"))
@@ -38,7 +38,7 @@ namespace TheReviewer.Data.Repositories
                     ? null
                     : reader.GetInt32(reader.GetOrdinal("game_id"));
 
-                var review = new ReviewModel(
+                var review = new GetReviewDTO(
                     reader.GetInt32(reader.GetOrdinal("id")),
                     reader.GetString(reader.GetOrdinal("content")),
                     reader.GetInt32(reader.GetOrdinal("rating")),
@@ -55,7 +55,7 @@ namespace TheReviewer.Data.Repositories
             return reviews;
         }
 
-        public void Add(ReviewDTO review)
+        public void Add(CreateReviewDTO review)
         {
             const string query = "INSERT INTO Review (content, rating, reviewer_id, film_id, game_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @film_id, @game_id, @created_at, @updated_at)";
 

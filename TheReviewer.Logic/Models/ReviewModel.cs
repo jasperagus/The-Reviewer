@@ -1,4 +1,4 @@
-﻿namespace TheReviewer.Data.Models
+﻿namespace TheReviewer.Logic.Models
 {
     public class ReviewModel
     {
