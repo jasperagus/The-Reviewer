@@ -1,4 +1,4 @@
-using TheReviewer.Models;
+using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Frontend.Models
 {

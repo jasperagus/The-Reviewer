@@ -1,4 +1,5 @@
 @using TheReviewer.Frontend.Models
+@using TheReviewer.Logic.Models
 @model FilmViewModel
 
 @{
@@ -28,7 +29,7 @@
         {
             foreach (var film in Model.Films)
             {
-                var filmReviews = Model.Reviews?.Where(r => r.FilmId == film.Id).ToList() ?? new List<TheReviewer.Models.ReviewModel>();
+                var filmReviews = Model.Reviews?.Where(r => r.FilmId == film.Id).ToList() ?? new List<ReviewModel>();
                 if (filmReviews.Any())
                 {
                     foreach (var review in filmReviews)

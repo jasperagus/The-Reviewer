@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TheReviewer.Data
+﻿namespace TheReviewer.Data
 {
     internal class TrContext
     {

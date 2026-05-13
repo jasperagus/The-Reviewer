@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheReviewer.Data\TheReviewer.Data.csproj" />
+    <ProjectReference Include="..\TheReviewer.Logic\TheReviewer.Logic.csproj" />
   </ItemGroup>
 
 </Project>

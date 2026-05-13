@@ -1,38 +1,47 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TheReviewer.Models;
+using TheReviewer.Data.DTOs;
+using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories
 {
-    public class FilmRepository
+    public class FilmRepository : IFilmRepository
     {
-        private  string _connection;
+        private readonly string _connectionString;
 
         public FilmRepository(string connectionString)
         {
-            _connection = connectionString;
+            _connectionString = connectionString;
         }
 
-        public  List<FilmModel> GetAll()
+        public List<GetFilmDTO> GetAll()
         {
-            var query = "SELECT * from Film";
-            using var connection = new SqlConnection(_connection);
+            const string query = "SELECT id, name, publisher, score, created_at, updated_at from Film";
+
+            using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
             connection.Open();
-            using var reader =  command.ExecuteReader();
-            if(!reader.HasRows)
+
+            using var reader = command.ExecuteReader();
+            if (!reader.HasRows)
             {
-                return new List<FilmModel>();
+                return new List<GetFilmDTO>();
             }
 
-            var films = new List<FilmModel>();
-            while( reader.Read())
+            var films = new List<GetFilmDTO>();
+            while (reader.Read())
             {
-                var film = new FilmModel(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetDateTime(4), reader.GetDateTime(5));
+                var film = new GetFilmDTO(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetInt32(3),
+                    reader.GetDateTime(4),
+                    reader.GetDateTime(5)
+                );
+
                 films.Add(film);
             }
+
             return films;
         }
     }
