@@ -6,19 +6,21 @@ namespace TheReviewer.Data.Repositories
 {
     public class ReviewRepository
     {
-        private string _connection;
+        private readonly string _connectionString;
 
         public ReviewRepository(string connectionString)
         {
-            _connection = connectionString;
+            _connectionString = connectionString;
         }
 
         public List<ReviewModel> GetAll()
         {
-            var query = "SELECT * FROM Review";
-            using var connection = new SqlConnection(_connection);
+            const string query = "SELECT id, content, rating, reviewer_id, film_id, game_id, created_at, updated_at FROM Review";
+
+            using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
             connection.Open();
+
             using var reader = command.ExecuteReader();
             if (!reader.HasRows)
             {
@@ -31,9 +33,11 @@ namespace TheReviewer.Data.Repositories
                 int? filmId = reader.IsDBNull(reader.GetOrdinal("film_id"))
                     ? null
                     : reader.GetInt32(reader.GetOrdinal("film_id"));
+
                 int? gameId = reader.IsDBNull(reader.GetOrdinal("game_id"))
                     ? null
                     : reader.GetInt32(reader.GetOrdinal("game_id"));
+
                 var review = new ReviewModel(
                     reader.GetInt32(reader.GetOrdinal("id")),
                     reader.GetString(reader.GetOrdinal("content")),
@@ -44,6 +48,7 @@ namespace TheReviewer.Data.Repositories
                     reader.GetDateTime(reader.GetOrdinal("created_at")),
                     reader.GetDateTime(reader.GetOrdinal("updated_at"))
                 );
+
                 reviews.Add(review);
             }
 
@@ -52,17 +57,19 @@ namespace TheReviewer.Data.Repositories
 
         public void Add(ReviewDTO review)
         {
-            var query =
-                "INSERT INTO Review (content, rating, reviewer_id, film_id, game_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @film_id, @game_id, @created_at, @updated_at)";
-            using var connection = new SqlConnection(_connection);
+            const string query = "INSERT INTO Review (content, rating, reviewer_id, film_id, game_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @film_id, @game_id, @created_at, @updated_at)";
+
+            using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
+
             command.Parameters.AddWithValue("@content", review.Content);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
-            command.Parameters.AddWithValue("@film_id", (object)review.FilmId ?? DBNull.Value);
-            command.Parameters.AddWithValue("@game_id", (object)review.GameId ?? DBNull.Value);
+            command.Parameters.AddWithValue("@film_id", review.FilmId!);
+            command.Parameters.AddWithValue("@game_id", review.GameId!);
             command.Parameters.AddWithValue("@created_at", DateTime.Now);
             command.Parameters.AddWithValue("@updated_at", DateTime.Now);
+
             connection.Open();
             command.ExecuteNonQuery();
         }

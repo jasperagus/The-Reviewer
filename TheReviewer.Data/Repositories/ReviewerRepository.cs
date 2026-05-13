@@ -5,18 +5,18 @@ namespace TheReviewer.Data.Repositories
 {
     public class ReviewerRepository
     {
-        private string _connection;
+        private readonly string _connectionString;
 
         public ReviewerRepository(string connectionString)
         {
-            _connection = connectionString;
+            _connectionString = connectionString;
         }
 
         public List<ReviewerModel> GetAll()
         {
-            var query = "SELECT * from Reviewer";
+            const string query = "SELECT id, name, birthdate, created_at, updated_at from Reviewer";
 
-            using var connection = new SqlConnection(_connection);
+            using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
             connection.Open();
 
@@ -36,6 +36,7 @@ namespace TheReviewer.Data.Repositories
                     reader.GetDateTime(3),
                     reader.GetDateTime(4)
                 );
+
                 reviewers.Add(reviewer);
             }
 
