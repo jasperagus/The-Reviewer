@@ -6,17 +6,17 @@
         public string Name { get; private set; }
         public string Publisher { get; private set; }
         public int Score { get; private set; }
-        public DateTime Created_at { get; private set; }
-        public DateTime Updated_at { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime UpdatedAt { get; private set; }
 
-        public FilmModel(int id, string name, string publisher, int score, DateTime created_at, DateTime updated_at)
+        public FilmModel(int id, string name, string publisher, int score, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             Name = name;
             Publisher = publisher;
-            this.Score = score;
-            Created_at = created_at;
-            Updated_at = updated_at;
+            Score = score;
+            CreatedAt = createdAt;
+            UpdatedAt = updatedAt;
         }
     }
 }

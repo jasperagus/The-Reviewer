@@ -2,7 +2,7 @@
 {
     public class ReviewDTO
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string Content { get; set; }
         public int Rating { get; set; }
         public int ReviewerId { get; set; }
