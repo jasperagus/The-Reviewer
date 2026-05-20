@@ -14,8 +14,7 @@ public class ReviewService(IReviewRepository repository) : IReviewService
             r.Content,
             r.Rating,
             r.ReviewerId,
-            r.FilmId,
-            r.GameId,
+            r.MediaId,
             r.CreatedAt,
             r.UpdatedAt
         )).ToList();
