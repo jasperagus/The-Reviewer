@@ -1,12 +1,12 @@
-namespace TheReviewer.Data.DTOs;
-
-public class GetMediaDTO
+namespace TheReviewer.Data.DTOs
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Publisher { get; set; }
-    public int Score { get; set; }
-    public int TypeId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public record GetMediaDTO(
+        int Id,
+        string Name,
+        string Publisher,
+        int Score,
+        int TypeId,
+        DateTime CreatedAt,
+        DateTime UpdatedAt
+    );
 }
