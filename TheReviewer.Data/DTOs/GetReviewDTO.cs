@@ -5,8 +5,7 @@
         string Content,
         int Rating,
         int ReviewerId,
-        int? FilmId,
-        int? GameId,
+        int? MediaId,
         DateTime CreatedAt,
         DateTime UpdatedAt
     );

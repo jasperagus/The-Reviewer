@@ -4,7 +4,6 @@
         string Content,
         int Rating,
         int ReviewerId,
-        int? FilmId,
-        int? GameId
+        int? MediaId
     );
 }
