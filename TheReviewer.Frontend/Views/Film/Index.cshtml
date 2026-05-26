@@ -1,6 +1,6 @@
 @using TheReviewer.Frontend.Models
 @using TheReviewer.Logic.Models
-@model FilmViewModel
+@model MediaViewModel
 
 @{
     ViewData["Title"] = "Film Index";
@@ -10,10 +10,10 @@
 <h1>Films</h1>
 
 <p>
-    <a asp-controller="Film" asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-controller="Media" asp-action="CreateFilm" class="btn btn-primary">Create New</a>
 </p>
 
-<table class="table table-stripedg">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Film title</th>
@@ -25,11 +25,12 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model?.Films != null && Model.Films.Any())
+        @if (Model?.Media != null && Model.Media.Any())
         {
-            foreach (var film in Model.Films)
+            foreach (var film in Model.Media)
             {
-                var filmReviews = Model.Reviews?.Where(r => r.FilmId == film.Id).ToList() ?? new List<ReviewModel>();
+                var filmReviews = Model.Reviews?.Where(r => r.MediaId == film.Id).ToList() ?? new List<ReviewModel>();
+
                 if (filmReviews.Any())
                 {
                     foreach (var review in filmReviews)
@@ -42,9 +43,9 @@
                             <td>@review.Rating</td>
                             <td>@review.Content</td>
                             <td>
-                                <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
-                                <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
-                                <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
+                                <a asp-controller="Media" asp-action="CreateFilm">Edit</a> |
+                                <a asp-controller="Media" asp-action="Films">Details</a> |
+                                <a asp-controller="Media" asp-action="Films">Delete</a>
                             </td>
                         </tr>
                     }
@@ -58,9 +59,9 @@
                         <td>—</td>
                         <td>No reviews yet</td>
                         <td>
-                            <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
-                            <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
-                            <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
+                            <a asp-controller="Media" asp-action="CreateFilm">Edit</a> |
+                            <a asp-controller="Media" asp-action="Films">Details</a> |
+                            <a asp-controller="Media" asp-action="Films">Delete</a>
                         </td>
                     </tr>
                 }
@@ -74,4 +75,3 @@
         }
     </tbody>
 </table>
-

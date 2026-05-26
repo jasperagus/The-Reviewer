@@ -18,7 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(connectionString));
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
 
-builder.Services.AddScoped<IMediaRepository, MediaRepository>();
+builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.AddScoped<IReviewerService, ReviewerService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();

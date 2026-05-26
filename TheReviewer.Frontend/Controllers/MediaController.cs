@@ -29,8 +29,7 @@ namespace TheReviewer.Frontend.Controllers
             var reviewers = _reviewerService.GetAll();
             var reviews = _reviewService.GetAll();
 
-            return View("Index", new MediaViewModel(media, reviewers, reviews, FilmTypeId));
-        }
+            return View("~/Views/Film/Index.cshtml", new MediaViewModel(media, reviewers, reviews, FilmTypeId));        }
 
         public IActionResult Games()
         {
@@ -38,8 +37,7 @@ namespace TheReviewer.Frontend.Controllers
             var reviewers = _reviewerService.GetAll();
             var reviews = _reviewService.GetAll();
 
-            return View("Index", new MediaViewModel(media, reviewers, reviews, GameTypeId));
-        }
+            return View("~/Views/Game/Index.cshtml", new MediaViewModel(media, reviewers, reviews, GameTypeId));        }
 
         public IActionResult CreateFilm()
         {

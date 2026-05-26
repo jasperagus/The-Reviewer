@@ -15,8 +15,7 @@ namespace TheReviewer.Data.Repositories
 
         public List<GetReviewDTO> GetAll()
         {
-            const string query = "SELECT id, content, rating, reviewer_id, film_id, game_id, created_at, updated_at FROM Review";
-
+            const string query = "SELECT id, content, rating, reviewer_id, media_id, created_at, updated_at FROM Review";
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
             connection.Open();

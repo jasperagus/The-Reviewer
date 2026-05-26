@@ -1,6 +1,6 @@
 @using TheReviewer.Frontend.Models
 @using TheReviewer.Logic.Models
-@model GameViewModel
+@model MediaViewModel
 
 @{
     ViewData["Title"] = "Game Index";
@@ -10,7 +10,7 @@
 <h1>Games</h1>
 
 <p>
-    <a asp-controller="Game" asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-controller="Media" asp-action="CreateGame" class="btn btn-primary">Create New</a>
 </p>
 
 <table class="table table-striped">
@@ -25,11 +25,12 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model?.Games != null && Model.Games.Any())
+        @if (Model?.Media != null && Model.Media.Any())
         {
-            foreach (var game in Model.Games)
+            foreach (var game in Model.Media)
             {
-                var gameReviews = Model.Reviews?.Where(r => r.GameId == game.Id).ToList() ?? new List<ReviewModel>();
+                var gameReviews = Model.Reviews?.Where(r => r.MediaId == game.Id).ToList() ?? new List<ReviewModel>();
+
                 if (gameReviews.Any())
                 {
                     foreach (var review in gameReviews)
@@ -42,9 +43,9 @@
                             <td>@review.Rating</td>
                             <td>@review.Content</td>
                             <td>
-                                <a asp-controller="Game" asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
-                                <a asp-controller="Game" asp-action="Details" asp-route-id="@game.Id">Details</a> |
-                                <a asp-controller="Game" asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                                <a asp-controller="Media" asp-action="CreateGame">Edit</a> |
+                                <a asp-controller="Media" asp-action="Games">Details</a> |
+                                <a asp-controller="Media" asp-action="Games">Delete</a>
                             </td>
                         </tr>
                     }
@@ -58,9 +59,9 @@
                         <td>—</td>
                         <td>No reviews yet</td>
                         <td>
-                            <a asp-controller="Game" asp-action="Edit" asp-route-id="@game.Id">Edit</a> |
-                            <a asp-controller="Game" asp-action="Details" asp-route-id="@game.Id">Details</a> |
-                            <a asp-controller="Game" asp-action="Delete" asp-route-id="@game.Id">Delete</a>
+                            <a asp-controller="Media" asp-action="CreateGame">Edit</a> |
+                            <a asp-controller="Media" asp-action="Games">Details</a> |
+                            <a asp-controller="Media" asp-action="Games">Delete</a>
                         </td>
                     </tr>
                 }
