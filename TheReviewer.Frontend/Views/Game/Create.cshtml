@@ -18,6 +18,8 @@
                 <select asp-for="MediaId" asp-items="Model.MediaItems" class="form-control">
                     <option value="">-- Select a game --</option>
                 </select>
+                <span asp-validation-for="MediaId" class="text-danger"></span>
+
             </div>
 
             <div class="form-group mb-3">

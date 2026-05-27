@@ -56,7 +56,7 @@ namespace TheReviewer.Data.Repositories
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@content", review.Content);
+            command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content.ToString() : string.Empty);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
             command.Parameters.AddWithValue("@media_id", review.MediaId.HasValue ? (object)review.MediaId.Value : DBNull.Value);
