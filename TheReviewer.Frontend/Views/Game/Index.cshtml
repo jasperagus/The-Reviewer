@@ -45,7 +45,9 @@
                             <td>@review.Rating</td>
                             <td>@(review.Content?.Length > 40 ? review.Content.Substring(0, 40) + "..." : review.Content)</td>
                             <td>
-                                <a asp-controller="Media" asp-action="EditGame">Edit</a> |
+                                <a asp-controller="Media" asp-action="Edit"
+                                   asp-route-id="@review.Id"
+                                   asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
                                 <a asp-controller="Media" asp-action="Games">Delete</a>
                             </td>
                         </tr>
