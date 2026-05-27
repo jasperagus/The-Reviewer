@@ -50,21 +50,6 @@
                         </tr>
                     }
                 }
-                else
-                {
-                    <tr>
-                        <td>@film.Name</td>
-                        <td>@film.Publisher</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>No reviews yet</td>
-                        <td>
-                            <a asp-controller="Media" asp-action="CreateFilm">Edit</a> |
-                            <a asp-controller="Media" asp-action="Films">Details</a> |
-                            <a asp-controller="Media" asp-action="Films">Delete</a>
-                        </td>
-                    </tr>
-                }
             }
         }
         else
