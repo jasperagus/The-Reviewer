@@ -56,7 +56,7 @@ namespace TheReviewer.Frontend.Controllers
                 Text = r.Name
             });
 
-            return View("Create", new CreateReviewViewModel()
+            return View("~/Views/Film/Create.cshtml", new CreateReviewViewModel()
             {
                 MediaItems = mediaSelectItems,
                 ReviewerItems = reviewerSelectItems,
