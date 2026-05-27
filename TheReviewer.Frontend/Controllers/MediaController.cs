@@ -127,5 +127,60 @@ namespace TheReviewer.Frontend.Controllers
                 Text = r.Name
             });
         }
+        // GET: Media/Edit/5?mediaTypeId=1
+        [HttpGet]
+        public IActionResult Edit(int id, int mediaTypeId)
+        {
+            // need service method GetById(int id)
+            var review = _reviewService.GetById(id);
+            if (review == null) return NotFound();
+
+            var model = new CreateReviewViewModel
+            {
+                Id = review.Id,
+                Content = review.Content,
+                Score = review.Rating,
+                ReviewerId = review.ReviewerId,
+                MediaId = review.MediaId,
+                MediaTypeId = mediaTypeId
+            };
+
+            // populate dropdowns for the edit page
+            PopulateCreateDropdowns(model);
+
+            // choose view path based on mediaTypeId (1=Film, 2=Game)
+            return mediaTypeId == FilmTypeId
+                ? View("~/Views/Film/Edit.cshtml", model)
+                : View("~/Views/Game/Edit.cshtml", model);
+        }
+
+// POST: Media/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(CreateReviewViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // You will need an Update method and DTO in the logic/data layer.
+                var updateDto = new UpdateReviewDTO(
+                    model.Id,
+                    model.Content,
+                    model.Score,
+                    model.ReviewerId,
+                    model.MediaId ?? 0
+                );
+
+                _reviewService.Update(updateDto);
+
+                return model.MediaTypeId == FilmTypeId ? RedirectToAction(nameof(Films)) : RedirectToAction(nameof(Games));
+            }
+
+            // if validation failed, re-populate dropdowns and redisplay
+            PopulateCreateDropdowns(model);
+
+            return model.MediaTypeId == FilmTypeId
+                ? View("~/Views/Film/Edit.cshtml", model)
+                : View("~/Views/Game/Edit.cshtml", model);
+        }
     }
 }

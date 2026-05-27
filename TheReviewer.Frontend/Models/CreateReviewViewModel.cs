@@ -7,6 +7,7 @@ namespace TheReviewer.Frontend.Models
 {
     public class CreateReviewViewModel
     {
+        public int Id { get; set; }
         public string? Content { get; set; }
         [Required(ErrorMessage = "You must enter a score")]
         public int Score { get; set; }

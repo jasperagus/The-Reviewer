@@ -24,4 +24,23 @@ public class ReviewService(IReviewRepository repository) : IReviewService
     {
         repository.Add(review);
     }
+    public ReviewModel? GetById(int id)
+    {
+        var r = repository.GetById(id); // now returns GetReviewDTO?
+        if (r == null) return null;
+        return new ReviewModel(
+            r.Id,
+            r.Content,
+            r.Rating,
+            r.ReviewerId,
+            r.MediaId,
+            r.CreatedAt,
+            r.UpdatedAt
+        );
+    }
+
+    public void Update(UpdateReviewDTO review)
+    {
+        repository.Update(review);
+    }
 }

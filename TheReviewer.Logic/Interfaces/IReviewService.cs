@@ -7,6 +7,10 @@ namespace TheReviewer.Logic.Interfaces
     {
         List<ReviewModel> GetAll();
 
+        ReviewModel? GetById(int id);
+
         void Add(CreateReviewDTO review);
+
+        void Update(UpdateReviewDTO review);
     }
 }
