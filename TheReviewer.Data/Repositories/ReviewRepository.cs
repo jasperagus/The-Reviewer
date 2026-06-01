@@ -99,7 +99,6 @@ namespace TheReviewer.Data.Repositories
             return review;
         }
 
-        // New: Update a review using UpdateReviewDTO (includes Id)
         public void Update(UpdateReviewDTO review)
         {
             const string query = @"
@@ -117,7 +116,6 @@ namespace TheReviewer.Data.Repositories
             command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content : string.Empty);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
-            // UpdateReviewDTO.MediaId is non-nullable int in your DTO — if you want nullable, change DTO accordingly.
             command.Parameters.AddWithValue("@media_id", review.MediaId == 0 ? DBNull.Value : (object)review.MediaId);
             command.Parameters.AddWithValue("@updated_at", DateTime.Now);
             command.Parameters.AddWithValue("@id", review.Id);
