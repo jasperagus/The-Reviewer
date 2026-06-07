@@ -43,4 +43,9 @@ public class ReviewService(IReviewRepository repository) : IReviewService
     {
         repository.Update(review);
     }
+    
+    public void Delete(int id)
+    {
+        repository.Delete(id);
+    }
 }

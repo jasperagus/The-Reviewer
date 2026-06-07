@@ -92,7 +92,7 @@ namespace TheReviewer.Frontend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateReviewViewModel model)
+        public IActionResult Create(CreateReviewViewModel model, int id, int mediaTypeId)
         {
             if (ModelState.IsValid)
             {
@@ -108,7 +108,9 @@ namespace TheReviewer.Frontend.Controllers
             }
 
             PopulateCreateDropdowns(model);
-            return View(model);
+            return mediaTypeId == FilmTypeId
+                ? View("~/Views/Film/Edit.cshtml", model)
+                : View("~/Views/Game/Edit.cshtml", model);
         }
 
         private void PopulateCreateDropdowns(CreateReviewViewModel model)
@@ -170,12 +172,28 @@ namespace TheReviewer.Frontend.Controllers
                 return model.MediaTypeId == FilmTypeId ? RedirectToAction(nameof(Films)) : RedirectToAction(nameof(Games));
             }
 
-            // if validation failed, re-populate dropdowns and redisplay
             PopulateCreateDropdowns(model);
 
             return model.MediaTypeId == FilmTypeId
                 ? View("~/Views/Film/Edit.cshtml", model)
                 : View("~/Views/Game/Edit.cshtml", model);
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult Delete(int id, int mediaTypeId)
+        {
+            var review = _reviewService.GetById(id);
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            _reviewService.Delete(id);
+
+            return mediaTypeId == FilmTypeId
+                ? RedirectToAction(nameof(Films))
+                : RedirectToAction(nameof(Games));
         }
     }
 }

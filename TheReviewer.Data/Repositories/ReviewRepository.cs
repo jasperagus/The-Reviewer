@@ -123,5 +123,17 @@ namespace TheReviewer.Data.Repositories
             connection.Open();
             command.ExecuteNonQuery();
         }
+        
+        public void Delete(int id)
+        {
+            const string query = "DELETE FROM Review WHERE id = @id";
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", id);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
     }
 }

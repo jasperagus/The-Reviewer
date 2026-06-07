@@ -9,5 +9,6 @@ namespace TheReviewer.Data.Interfaces
 
         void Add(CreateReviewDTO review);
         void Update(UpdateReviewDTO review);
+        void Delete(int id);
     }
 }

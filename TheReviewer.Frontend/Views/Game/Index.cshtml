@@ -6,6 +6,7 @@
     ViewData["Title"] = "Game Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <h1>Games</h1>
 
@@ -48,8 +49,14 @@
                                 <a asp-controller="Media" asp-action="Edit"
                                    asp-route-id="@review.Id"
                                    asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
-                                <a asp-controller="Media" asp-action="Games">Delete</a>
-                            </td>
+                                <a
+                                    class="delete-review"
+                                    onclick="myFunction()"
+                                   data-id="@review.Id"
+                                   data-media-type-id="@Model.MediaTypeId">
+                                    Delete
+                                </a>
+                                </td>
                         </tr>
 
                         <tr id="@detailId" style="display:none;">
@@ -77,40 +84,7 @@
                         </tr>
                     }
                 }
-                else
-                {
-                    var detailId = $"detail-game-{game.Id}-noreview";
-
-                    <tr class="clickable-row" style="cursor:pointer;" data-target="@detailId">
-                        <td>@game.Name</td>
-                        <td>@game.Publisher</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>No reviews yet</td>
-                        <td>
-                            <a asp-controller="Media" asp-action="CreateGame">Edit</a> |
-                            <a asp-controller="Media" asp-action="Games">Delete</a>
-                        </td>
-                    </tr>
-
-                    <tr id="@detailId" style="display:none;">
-                        <td colspan="6">
-                            <div class="p-3 border rounded bg-light">
-                                <div class="row mb-2">
-                                    <div class="col text-start fw-bold">@game.Name</div>
-                                    <div class="col text-center">@game.Publisher</div>
-                                    <div class="col text-end">No reviewer</div>
-                                </div>
-
-                                <div class="row mb-2">
-                                    <div class="col text-center">
-                                        No reviews yet
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                }
+               
             }
         }
         else
@@ -124,6 +98,8 @@
 
 @section Scripts {
     <script>
+        function myFunction() {
+        }
         document.querySelectorAll('.clickable-row').forEach(row => {
             row.addEventListener('click', function (e) {
                 if (e.target.tagName === 'A') return;
@@ -133,6 +109,35 @@
                 if (detailRow) {
                     detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
                 }
+            });
+        });
+        $(document).ready(function () {
+            $(document).on('click', '.delete-review', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var $el = $(this);
+                var reviewId = $el.data('id');
+                var mediaTypeId = $el.data('media-type-id');
+
+                if (!confirm('Are you sure you want to delete this review?')) {
+                    return;
+                }
+
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+                $.post('@Url.Action("Delete", "Media")', {
+                    id: reviewId,
+                    mediaTypeId: mediaTypeId,
+                    __RequestVerificationToken: token
+                })
+                    .done(function () {
+                        // success: refresh or remove row
+                        location.reload();
+                    })
+                    .fail(function (xhr) {
+                        alert('Delete failed: ' + xhr.status);
+                    });
             });
         });
     </script>
