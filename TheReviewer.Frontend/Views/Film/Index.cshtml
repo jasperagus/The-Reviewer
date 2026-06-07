@@ -1,6 +1,6 @@
 @using TheReviewer.Frontend.Models
 @using TheReviewer.Logic.Models
-@model FilmViewModel
+@model MediaViewModel
 
 @{
     ViewData["Title"] = "Film Index";
@@ -10,10 +10,10 @@
 <h1>Films</h1>
 
 <p>
-    <a asp-controller="Film" asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-controller="Media" asp-action="CreateFilm" class="btn btn-primary">Create New</a>
 </p>
 
-<table class="table table-stripedg">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Film title</th>
@@ -25,44 +25,57 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model?.Films != null && Model.Films.Any())
+        @if (Model?.Media != null && Model.Media.Any())
         {
-            foreach (var film in Model.Films)
+            foreach (var film in Model.Media)
             {
-                var filmReviews = Model.Reviews?.Where(r => r.FilmId == film.Id).ToList() ?? new List<ReviewModel>();
+                var filmReviews = Model.Reviews?.Where(r => r.MediaId == film.Id).ToList() ?? new List<ReviewModel>();
+
                 if (filmReviews.Any())
                 {
                     foreach (var review in filmReviews)
                     {
                         var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
-                        <tr>
+                        var detailId = $"detail-{review.Id}";
+
+                        <tr class="clickable-row" style="cursor:pointer;" data-target="@detailId">
                             <td>@film.Name</td>
                             <td>@film.Publisher</td>
                             <td>@(reviewer?.Name ?? "Unknown")</td>
                             <td>@review.Rating</td>
-                            <td>@review.Content</td>
+                            <td>@(review.Content?.Length > 40 ? review.Content.Substring(0, 40) + "..." : review.Content)</td>
                             <td>
-                                <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
-                                <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
-                                <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
+                                <a asp-controller="Media" asp-action="Edit"
+                                   asp-route-id="@review.Id"
+                                   asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
+                                <a asp-controller="Media" asp-action="Films">Delete</a>
+                            </td>
+                        </tr>
+
+                        <tr id="@detailId" style="display:none;">
+                            <td colspan="6">
+                                <div class="p-3 border rounded bg-light">
+                                    <div class="row mb-2">
+                                        <div class="col text-start fw-bold">@film.Name</div>
+                                        <div class="col text-center">@film.Publisher</div>
+                                        <div class="col text-end">@(reviewer?.Name ?? "Unknown")</div>
+                                    </div>
+
+                                    <div class="row mb-2">
+                                        <div class="col text-center">
+                                            <div style="white-space: pre-wrap;">@review.Content</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col text-center">
+                                            <strong>Rating:</strong> @review.Rating
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td>@film.Name</td>
-                        <td>@film.Publisher</td>
-                        <td>—</td>
-                        <td>—</td>
-                        <td>No reviews yet</td>
-                        <td>
-                            <a asp-controller="Film" asp-action="Edit" asp-route-id="@film.Id">Edit</a> |
-                            <a asp-controller="Film" asp-action="Details" asp-route-id="@film.Id">Details</a> |
-                            <a asp-controller="Film" asp-action="Delete" asp-route-id="@film.Id">Delete</a>
-                        </td>
-                    </tr>
                 }
             }
         }
@@ -75,3 +88,18 @@
     </tbody>
 </table>
 
+@section Scripts {
+    <script>
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', function (e) {
+                if (e.target.tagName === 'A') return;
+
+                const targetId = this.getAttribute('data-target');
+                const detailRow = document.getElementById(targetId);
+                if (detailRow) {
+                    detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
+                }
+            });
+        });
+    </script>
+}

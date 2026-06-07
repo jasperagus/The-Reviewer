@@ -15,8 +15,7 @@ namespace TheReviewer.Data.Repositories
 
         public List<GetReviewDTO> GetAll()
         {
-            const string query = "SELECT id, content, rating, reviewer_id, film_id, game_id, created_at, updated_at FROM Review";
-
+            const string query = "SELECT id, content, rating, reviewer_id, media_id, created_at, updated_at FROM Review";
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
             connection.Open();
@@ -30,21 +29,16 @@ namespace TheReviewer.Data.Repositories
             var reviews = new List<GetReviewDTO>();
             while (reader.Read())
             {
-                int? filmId = reader.IsDBNull(reader.GetOrdinal("film_id"))
+                int? mediaId = reader.IsDBNull(reader.GetOrdinal("media_id"))
                     ? null
-                    : reader.GetInt32(reader.GetOrdinal("film_id"));
-
-                int? gameId = reader.IsDBNull(reader.GetOrdinal("game_id"))
-                    ? null
-                    : reader.GetInt32(reader.GetOrdinal("game_id"));
+                    : reader.GetInt32(reader.GetOrdinal("media_id"));
 
                 var review = new GetReviewDTO(
                     reader.GetInt32(reader.GetOrdinal("id")),
                     reader.GetString(reader.GetOrdinal("content")),
                     reader.GetInt32(reader.GetOrdinal("rating")),
                     reader.GetInt32(reader.GetOrdinal("reviewer_id")),
-                    filmId,
-                    gameId,
+                    mediaId,
                     reader.GetDateTime(reader.GetOrdinal("created_at")),
                     reader.GetDateTime(reader.GetOrdinal("updated_at"))
                 );
@@ -57,18 +51,74 @@ namespace TheReviewer.Data.Repositories
 
         public void Add(CreateReviewDTO review)
         {
-            const string query = "INSERT INTO Review (content, rating, reviewer_id, film_id, game_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @film_id, @game_id, @created_at, @updated_at)";
+            const string query = "INSERT INTO Review (content, rating, reviewer_id, media_id, created_at, updated_at) VALUES (@content, @rating, @reviewer_id, @media_id, @created_at, @updated_at)";
 
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@content", review.Content);
+            command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content : string.Empty);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
-            command.Parameters.AddWithValue("@film_id", review.FilmId!);
-            command.Parameters.AddWithValue("@game_id", review.GameId!);
+            command.Parameters.AddWithValue("@media_id", review.MediaId.HasValue ? (object)review.MediaId.Value : DBNull.Value);
             command.Parameters.AddWithValue("@created_at", DateTime.Now);
             command.Parameters.AddWithValue("@updated_at", DateTime.Now);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+        }
+
+        // New: Get single review by id
+        public GetReviewDTO? GetById(int id)
+        {
+            const string query = "SELECT id, content, rating, reviewer_id, media_id, created_at, updated_at FROM Review WHERE id = @id";
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", id);
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+            if (!reader.Read())
+            {
+                return null;
+            }
+
+            int? mediaId = reader.IsDBNull(reader.GetOrdinal("media_id"))
+                ? null
+                : reader.GetInt32(reader.GetOrdinal("media_id"));
+
+            var review = new GetReviewDTO(
+                reader.GetInt32(reader.GetOrdinal("id")),
+                reader.GetString(reader.GetOrdinal("content")),
+                reader.GetInt32(reader.GetOrdinal("rating")),
+                reader.GetInt32(reader.GetOrdinal("reviewer_id")),
+                mediaId,
+                reader.GetDateTime(reader.GetOrdinal("created_at")),
+                reader.GetDateTime(reader.GetOrdinal("updated_at"))
+            );
+
+            return review;
+        }
+
+        public void Update(UpdateReviewDTO review)
+        {
+            const string query = @"
+                UPDATE Review
+                SET content = @content,
+                    rating = @rating,
+                    reviewer_id = @reviewer_id,
+                    media_id = @media_id,
+                    updated_at = @updated_at
+                WHERE id = @id";
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content : string.Empty);
+            command.Parameters.AddWithValue("@rating", review.Rating);
+            command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
+            command.Parameters.AddWithValue("@media_id", review.MediaId == 0 ? DBNull.Value : (object)review.MediaId);
+            command.Parameters.AddWithValue("@updated_at", DateTime.Now);
+            command.Parameters.AddWithValue("@id", review.Id);
 
             connection.Open();
             command.ExecuteNonQuery();

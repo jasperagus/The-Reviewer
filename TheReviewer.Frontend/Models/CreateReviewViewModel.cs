@@ -1,25 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TheReviewer.Frontend.Models
 {
     public class CreateReviewViewModel
     {
-        public IEnumerable<SelectListItem>? FilmItems { get; set; }
-        public IEnumerable<SelectListItem>? GameItems { get; set; }
-        public IEnumerable<SelectListItem>? ReviewerItems { get; set; }
-
-        public string Content { get; set; }
-
-        [Range(1, 100, ErrorMessage = "Score must be between 1 and 100.")]
+        public int Id { get; set; }
+        public string? Content { get; set; }
+        [Required(ErrorMessage = "You must enter a score")]
         public int Score { get; set; }
-
-        [Required(ErrorMessage = "Please select a film.")]
-        public int FilmId { get; set; }
-
-        [Required(ErrorMessage = "Please select a game.")]
-        public int GameId { get; set; }
-
         public int ReviewerId { get; set; }
+        [Required(ErrorMessage = "Please select a game.")]
+        public int? MediaId { get; set; }
+        public int MediaTypeId { get; set; } // 1 = Film, 2 = Game
+        public List<SelectListItem> MediaItems { get; set; } = new();
+        public List<SelectListItem> ReviewerItems { get; set; } = new();
     }
 }
