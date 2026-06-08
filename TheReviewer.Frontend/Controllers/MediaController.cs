@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
 using TheReviewer.Logic.Interfaces;
+using System.Linq;
+using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Frontend.Controllers
 {
@@ -38,6 +40,23 @@ namespace TheReviewer.Frontend.Controllers
             var reviews = _reviewService.GetAll();
 
             return View("~/Views/Game/Index.cshtml", new MediaViewModel(media, reviewers, reviews, GameTypeId));
+        }
+
+        [HttpGet]
+        public IActionResult Details(int id, int mediaTypeId)
+        {
+            var mediaList = _mediaService.GetByType(mediaTypeId);
+            var mediaItem = mediaList.FirstOrDefault(m => m.Id == id);
+            if (mediaItem == null) return NotFound();
+
+            var reviewers = _reviewerService.GetAll();
+            var reviews = _reviewService.GetAll().Where(r => r.MediaId == id).ToList();
+
+            var vm = new MediaViewModel(new List<MediaModel> { mediaItem }, reviewers, reviews, mediaTypeId);
+
+            return mediaTypeId == FilmTypeId
+                ? View("~/Views/Film/Details.cshtml", vm)
+                : View("~/Views/Game/Details.cshtml", vm);
         }
 
         public IActionResult CreateFilm()

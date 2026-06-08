@@ -6,7 +6,6 @@
     ViewData["Title"] = "Game Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <h1>Games</h1>
 
@@ -19,9 +18,8 @@
         <tr>
             <th>Game title</th>
             <th>Publisher</th>
-            <th>Reviewer</th>
-            <th>Score</th>
-            <th>Review</th>
+            <th>Avg score</th>
+            <th># Reviews</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -30,115 +28,25 @@
         {
             foreach (var game in Model.Media)
             {
-                var gameReviews = Model.Reviews?.Where(r => r.MediaId == game.Id).ToList() ?? new List<ReviewModel>();
-
-                if (gameReviews.Any())
-                {
-                    foreach (var review in gameReviews)
-                    {
-                        var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
-                        var detailId = $"detail-game-{game.Id}-review-{review.Id}";
-
-                        <tr class="clickable-row" style="cursor:pointer;" data-target="@detailId">
-                            <td>@game.Name</td>
-                            <td>@game.Publisher</td>
-                            <td>@(reviewer?.Name ?? "Unknown")</td>
-                            <td>@review.Rating</td>
-                            <td>@(review.Content?.Length > 40 ? review.Content.Substring(0, 40) + "..." : review.Content)</td>
-                            <td>
-                                <a asp-controller="Media" asp-action="Edit"
-                                   asp-route-id="@review.Id"
-                                   asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
-                                <a
-                                    class="delete-review"
-                                    onclick="myFunction()"
-                                   data-id="@review.Id"
-                                   data-media-type-id="@Model.MediaTypeId">
-                                    Delete
-                                </a>
-                                </td>
-                        </tr>
-
-                        <tr id="@detailId" style="display:none;">
-                            <td colspan="6">
-                                <div class="p-3 border rounded bg-light">
-                                    <div class="row mb-2">
-                                        <div class="col text-start fw-bold">@game.Name</div>
-                                        <div class="col text-center">@game.Publisher</div>
-                                        <div class="col text-end">@(reviewer?.Name ?? "Unknown")</div>
-                                    </div>
-
-                                    <div class="row mb-2">
-                                        <div class="col text-center">
-                                            <div style="white-space: pre-wrap;">@review.Content</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col text-center">
-                                            <strong>Score:</strong> @review.Rating
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
-               
+                var reviewCount = Model.Reviews?.Count(r => r.MediaId == game.Id) ?? 0;
+                <tr>
+                    <td>
+                        <a asp-controller="Media" asp-action="Details" asp-route-id="@game.Id" asp-route-mediaTypeId="@Model.MediaTypeId">
+                            @game.Name
+                        </a>
+                    </td>
+                    <td>@game.Publisher</td>
+                    <td>@(game.Score)</td>
+                    <td>@reviewCount</td>
+                    <td>
+                        <a asp-controller="Media" asp-action="CreateGame">Add review</a>
+                    </td>
+                </tr>
             }
         }
         else
         {
-            <tr>
-                <td colspan="6">No games found.</td>
-            </tr>
+            <tr><td colspan="5">No games found.</td></tr>
         }
     </tbody>
 </table>
-
-@section Scripts {
-    <script>
-        function myFunction() {
-        }
-        document.querySelectorAll('.clickable-row').forEach(row => {
-            row.addEventListener('click', function (e) {
-                if (e.target.tagName === 'A') return;
-
-                const targetId = this.getAttribute('data-target');
-                const detailRow = document.getElementById(targetId);
-                if (detailRow) {
-                    detailRow.style.display = detailRow.style.display === 'none' ? 'table-row' : 'none';
-                }
-            });
-        });
-        $(document).ready(function () {
-            $(document).on('click', '.delete-review', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                var $el = $(this);
-                var reviewId = $el.data('id');
-                var mediaTypeId = $el.data('media-type-id');
-
-                if (!confirm('Are you sure you want to delete this review?')) {
-                    return;
-                }
-
-                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
-
-                $.post('@Url.Action("Delete", "Media")', {
-                    id: reviewId,
-                    mediaTypeId: mediaTypeId,
-                    __RequestVerificationToken: token
-                })
-                    .done(function () {
-                        // success: refresh or remove row
-                        location.reload();
-                    })
-                    .fail(function (xhr) {
-                        alert('Delete failed: ' + xhr.status);
-                    });
-            });
-        });
-    </script>
-}
