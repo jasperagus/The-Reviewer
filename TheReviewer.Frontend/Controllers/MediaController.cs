@@ -117,7 +117,7 @@ namespace TheReviewer.Frontend.Controllers
             {
                 var reviewDTO = new CreateReviewDTO(
                     model.Content,
-                    model.Score,
+                    model.Score.Value,
                     model.ReviewerId,
                     model.MediaId
                 );
@@ -181,7 +181,7 @@ namespace TheReviewer.Frontend.Controllers
                 var updateDto = new UpdateReviewDTO(
                     model.Id,
                     model.Content,
-                    model.Score,
+                    model.Score.Value,
                     model.ReviewerId,
                     model.MediaId ?? 0
                 );
