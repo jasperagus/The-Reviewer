@@ -1,0 +1,55 @@
+@using TheReviewer.Frontend.Models
+@using TheReviewer.Logic.Models
+@model MediaViewModel
+
+@{
+    ViewData["Title"] = "Game details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model?.Media == null || !Model.Media.Any())
+{
+    <div>Media not found.</div>
+}
+else
+{
+    var game = Model.Media.First();
+    <h1>@game.Name</h1>
+    <p><strong>Publisher:</strong> @game.Publisher</p>
+    <p><strong>Score:</strong> @game.Score</p>
+
+    <h3>Reviews (@(Model.Reviews?.Count ?? 0))</h3>
+
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Reviewer</th>
+                    <th>Rating</th>
+                    <th>Excerpt</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model.Reviews)
+                {
+                    var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
+                    <tr>
+                        <td>@(reviewer?.Name ?? "Unknown")</td>
+                        <td>@review.Rating</td>
+                        <td>@(review.Content?.Length > 80 ? review.Content.Substring(0, 80) + "..." : review.Content)</td>
+                        <td>
+                            <a asp-controller="Media" asp-action="Edit" asp-route-id="@review.Id" asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div>No reviews yet for this game. <a asp-controller="Media" asp-action="CreateGame">Add one</a>.</div>
+    }
+}
+
