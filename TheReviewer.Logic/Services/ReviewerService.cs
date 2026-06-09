@@ -1,14 +1,20 @@
 using TheReviewer.Data.Interfaces;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Logic.Services;
 
-public class ReviewerService(IReviewerRepository repository) : IReviewerService
+public class ReviewerService
 {
+    private readonly IReviewerRepository _repository;
+
+    public ReviewerService(IReviewerRepository repository)
+    {
+        _repository = repository;
+    }
+
     public List<ReviewerModel> GetAll()
     {
-        return repository.GetAll().Select(r => new ReviewerModel(
+        return _repository.GetAll().Select(r => new ReviewerModel(
             r.Id,
             r.Name,
             r.Birthdate,

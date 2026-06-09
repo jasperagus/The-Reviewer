@@ -2,22 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Logic.Interfaces;
+using TheReviewer.Logic.Services;
 using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Frontend.Controllers
 {
     public class MediaController : Controller
     {
-        private readonly IMediaService _mediaService;
-        private readonly IReviewService _reviewService;
-        private readonly IReviewerService _reviewerService;
+        private readonly MediaService _mediaService;
+        private readonly ReviewService _reviewService;
+        private readonly ReviewerService _reviewerService;
 
         private const int FilmTypeId = 1;
         private const int GameTypeId = 2;
         private const int ShowTypeId = 3;
 
-        public MediaController(IMediaService mediaService, IReviewService reviewService, IReviewerService reviewerService)
+        public MediaController(MediaService mediaService, ReviewService reviewService, ReviewerService reviewerService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;
@@ -157,13 +157,13 @@ namespace TheReviewer.Frontend.Controllers
         {
             if (ModelState.IsValid)
             {
-                var reviewDto = new CreateReviewDTO(
-                    model.Content,
-                    model.Score.Value,
+                var review = new ReviewModel(
+                    model.Content ?? string.Empty,
+                    model.Score.GetValueOrDefault(),
                     model.ReviewerId,
                     model.MediaId
                 );
-                _reviewService.Add(reviewDto);
+                _reviewService.Add(review);
 
                 return RedirectToAction(GetIndexActionName(model.MediaTypeId));
             }
@@ -220,7 +220,7 @@ namespace TheReviewer.Frontend.Controllers
                 var updateDto = new UpdateReviewDTO(
                     model.Id,
                     model.Content,
-                    model.Score.Value,
+                    model.Score.GetValueOrDefault(),
                     model.ReviewerId,
                     model.MediaId ?? 0
                 );

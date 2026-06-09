@@ -1,15 +1,22 @@
-using TheReviewer.Data.DTOs;
+using CreateReviewDTO = TheReviewer.Data.DTOs.CreateReviewDTO;
+using UpdateReviewDTO = TheReviewer.Data.DTOs.UpdateReviewDTO;
 using TheReviewer.Data.Interfaces;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Logic.Services;
 
-public class ReviewService(IReviewRepository repository) : IReviewService
+public class ReviewService
 {
+    private readonly IReviewRepository _repository;
+
+    public ReviewService(IReviewRepository repository)
+    {
+        _repository = repository;
+    }
+
     public List<ReviewModel> GetAll()
     {
-        return repository.GetAll().Select(r => new ReviewModel(
+        return _repository.GetAll().Select(r => new ReviewModel(
             r.Id,
             r.Content,
             r.Rating,
@@ -20,13 +27,19 @@ public class ReviewService(IReviewRepository repository) : IReviewService
         )).ToList();
     }
 
-    public void Add(CreateReviewDTO review)
+    public void Add(ReviewModel review)
     {
-        repository.Add(review);
+        _repository.Add(new CreateReviewDTO(
+            review.Content,
+            review.Rating,
+            review.ReviewerId,
+            review.MediaId
+        ));
     }
+
     public ReviewModel? GetById(int id)
     {
-        var r = repository.GetById(id); // now returns GetReviewDTO?
+        var r = _repository.GetById(id); 
         if (r == null) return null;
         return new ReviewModel(
             r.Id,
@@ -41,11 +54,11 @@ public class ReviewService(IReviewRepository repository) : IReviewService
 
     public void Update(UpdateReviewDTO review)
     {
-        repository.Update(review);
+        _repository.Update(review);
     }
-    
+
     public void Delete(int id)
     {
-        repository.Delete(id);
+        _repository.Delete(id);
     }
 }

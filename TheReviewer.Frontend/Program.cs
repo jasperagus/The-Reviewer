@@ -1,6 +1,5 @@
 using TheReviewer.Data.Interfaces;
 using TheReviewer.Data.Repositories;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,9 +18,9 @@ builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(conn
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
 
 builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
-builder.Services.AddScoped<IMediaService, MediaService>();
-builder.Services.AddScoped<IReviewerService, ReviewerService>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<MediaService>();
+builder.Services.AddScoped<ReviewerService>();
+builder.Services.AddScoped<ReviewService>();
 
 var app = builder.Build();
 

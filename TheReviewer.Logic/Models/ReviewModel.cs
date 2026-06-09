@@ -20,5 +20,10 @@
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
         }
+
+        public ReviewModel(string content, int rating, int reviewerId, int? mediaId)
+            : this(0, content, rating, reviewerId, mediaId, DateTime.MinValue, DateTime.MinValue)
+        {
+        }
     }
 }
