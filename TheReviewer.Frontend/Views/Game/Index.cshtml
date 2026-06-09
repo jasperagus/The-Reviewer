@@ -10,7 +10,7 @@
 <h1>Games</h1>
 
 <p>
-    <a asp-controller="Media" asp-action="CreateGame" class="btn btn-primary">Create New</a>
+    <a asp-controller="Review" asp-action="CreateGame" class="btn btn-primary">Create New</a>
 </p>
 
 <table class="table table-striped">
@@ -39,7 +39,7 @@
                     <td>@(game.Score)</td>
                     <td>@reviewCount</td>
                     <td>
-                        <a asp-controller="Media" asp-action="CreateGame">Add review</a>
+                        <a asp-controller="Review" asp-action="CreateGame">Add review</a>
                     </td>
                 </tr>
             }

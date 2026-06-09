@@ -9,7 +9,7 @@
 <h1>Shows</h1>
 
 <p>
-    <a asp-controller="Media" asp-action="CreateShow" class="btn btn-primary">Create New</a>
+    <a asp-controller="Review" asp-action="CreateShow" class="btn btn-primary">Create New</a>
 </p>
 
 <table class="table table-striped">
@@ -40,7 +40,7 @@
                     <td>@show.Score</td>
                     <td>@reviewCount</td>
                     <td>
-                        <a asp-controller="Media" asp-action="CreateShow">Add review</a>
+                        <a asp-controller="Review" asp-action="CreateShow">Add review</a>
                     </td>
                 </tr>
             }

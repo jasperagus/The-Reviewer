@@ -40,12 +40,12 @@ else
                         <td>@review.Rating</td>
                         <td>@(review.Content?.Length > 80 ? review.Content.Substring(0, 80) + "..." : review.Content)</td>
                         <td>
-                            <a asp-controller="Media" 
+                            <a asp-controller="Review" 
                                asp-action="Edit" 
                                asp-route-id="@review.Id" 
                                asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
 
-                            <form asp-controller="Media"
+                            <form asp-controller="Review"
                                   asp-action="Delete"
                                   asp-route-id="@review.Id"
                                   asp-route-mediaTypeId="@Model.MediaTypeId"
@@ -63,7 +63,7 @@ else
     }
     else
     {
-        <div>No reviews yet for this film. <a asp-controller="Media" asp-action="CreateFilm">Add one</a>.</div>
+        <div>No reviews yet for this film. <a asp-controller="Review" asp-action="CreateFilm">Add one</a>.</div>
     }
 }
 
