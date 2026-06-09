@@ -1,0 +1,54 @@
+@using TheReviewer.Frontend.Models
+@model MediaViewModel
+
+@{
+    ViewData["Title"] = "Show Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Shows</h1>
+
+<p>
+    <a asp-controller="Media" asp-action="CreateShow" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Show title</th>
+            <th>Episodes</th>
+            <th>Publisher</th>
+            <th>Avg score</th>
+            <th># Reviews</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Media != null && Model.Media.Any())
+        {
+            foreach (var show in Model.Media)
+            {
+                var reviewCount = Model.Reviews?.Count(r => r.MediaId == show.Id) ?? 0;
+                <tr>
+                    <td>
+                        <a asp-controller="Media" asp-action="Details" asp-route-id="@show.Id" asp-route-mediaTypeId="@Model.MediaTypeId">
+                            @show.Name
+                        </a>
+                    </td>
+                    <td>@(show.Episodes?.ToString() ?? "-")</td>
+                    <td>@show.Publisher</td>
+                    <td>@show.Score</td>
+                    <td>@reviewCount</td>
+                    <td>
+                        <a asp-controller="Media" asp-action="CreateShow">Add review</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="6">No shows found.</td></tr>
+        }
+    </tbody>
+</table>
+

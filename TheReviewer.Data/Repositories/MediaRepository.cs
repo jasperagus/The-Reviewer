@@ -15,7 +15,10 @@ namespace TheReviewer.Data.Repositories
 
         public List<GetMediaDTO> GetAll()
         {
-            const string query = "SELECT id, name, publisher, score, type_id, created_at, updated_at FROM Media";
+            const string query = @"
+                SELECT m.id, m.name, m.publisher, m.score, m.type_id, s.episodes, m.created_at, m.updated_at
+                FROM Media m
+                LEFT JOIN [Show] s ON s.media_id = m.id";
 
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
@@ -36,8 +39,9 @@ namespace TheReviewer.Data.Repositories
                     reader.GetString(2),     // publisher
                     reader.GetInt32(3),      // score
                     reader.GetInt32(4),      // type_id
-                    reader.GetDateTime(5),   // created_at
-                    reader.GetDateTime(6)    // updated_at
+                    reader.IsDBNull(5) ? null : reader.GetInt32(5), // episodes
+                    reader.GetDateTime(6),   // created_at
+                    reader.GetDateTime(7)    // updated_at
                 );
 
                 media.Add(item);
@@ -48,7 +52,11 @@ namespace TheReviewer.Data.Repositories
 
         public List<GetMediaDTO> GetByType(int typeId)
         {
-            const string query = "SELECT id, name, publisher, score, type_id, created_at, updated_at FROM Media WHERE type_id = @typeId";
+            const string query = @"
+                SELECT m.id, m.name, m.publisher, m.score, m.type_id, s.episodes, m.created_at, m.updated_at
+                FROM Media m
+                LEFT JOIN [Show] s ON s.media_id = m.id
+                WHERE m.type_id = @typeId";
 
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
@@ -70,8 +78,9 @@ namespace TheReviewer.Data.Repositories
                     reader.GetString(2),
                     reader.GetInt32(3),
                     reader.GetInt32(4),
-                    reader.GetDateTime(5),
-                    reader.GetDateTime(6)
+                    reader.IsDBNull(5) ? null : reader.GetInt32(5),
+                    reader.GetDateTime(6),
+                    reader.GetDateTime(7)
                 );
 
                 media.Add(item);

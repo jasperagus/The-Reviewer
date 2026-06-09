@@ -14,6 +14,7 @@ public class MediaService(IMediaRepository repository) : IMediaService
             m.Publisher,
             m.Score,
             m.TypeId,
+            m.Episodes,
             m.CreatedAt,
             m.UpdatedAt
         )).ToList();
@@ -27,6 +28,7 @@ public class MediaService(IMediaRepository repository) : IMediaService
             m.Publisher,
             m.Score,
             m.TypeId,
+            m.Episodes,
             m.CreatedAt,
             m.UpdatedAt
         )).ToList();

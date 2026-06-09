@@ -6,6 +6,7 @@ namespace TheReviewer.Data.DTOs
         string Publisher,
         int Score,
         int TypeId,
+        int? Episodes,
         DateTime CreatedAt,
         DateTime UpdatedAt
     );

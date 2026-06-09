@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
 using TheReviewer.Logic.Interfaces;
-using System.Linq;
 using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Frontend.Controllers
@@ -16,6 +15,7 @@ namespace TheReviewer.Frontend.Controllers
 
         private const int FilmTypeId = 1;
         private const int GameTypeId = 2;
+        private const int ShowTypeId = 3;
 
         public MediaController(IMediaService mediaService, IReviewService reviewService, IReviewerService reviewerService)
         {
@@ -31,6 +31,20 @@ namespace TheReviewer.Frontend.Controllers
             var reviews = _reviewService.GetAll();
 
             return View("~/Views/Film/Index.cshtml", new MediaViewModel(media, reviewers, reviews, FilmTypeId));        
+        }
+
+        public IActionResult Shows()
+        {
+            return Series();
+        }
+
+        public IActionResult Series()
+        {
+            var media = _mediaService.GetByType(ShowTypeId);
+            var reviewers = _reviewerService.GetAll();
+            var reviews = _reviewService.GetAll();
+
+            return View("~/Views/Show/Index.cshtml", new MediaViewModel(media, reviewers, reviews, ShowTypeId));
         }
 
         public IActionResult Games()
@@ -54,9 +68,7 @@ namespace TheReviewer.Frontend.Controllers
 
             var vm = new MediaViewModel(new List<MediaModel> { mediaItem }, reviewers, reviews, mediaTypeId);
 
-            return mediaTypeId == FilmTypeId
-                ? View("~/Views/Film/Details.cshtml", vm)
-                : View("~/Views/Game/Details.cshtml", vm);
+            return View(GetDetailsViewPath(mediaTypeId), vm);
         }
 
         public IActionResult CreateFilm()
@@ -109,27 +121,55 @@ namespace TheReviewer.Frontend.Controllers
             });
         }
 
+        public IActionResult CreateShow()
+        {
+            return CreateSeries();
+        }
+
+        public IActionResult CreateSeries()
+        {
+            var media = _mediaService.GetByType(ShowTypeId);
+            var reviewers = _reviewerService.GetAll();
+
+            var mediaSelectItems = media.ConvertAll(m => new SelectListItem()
+            {
+                Value = m.Id.ToString(),
+                Text = m.Name
+            });
+
+            var reviewerSelectItems = reviewers.ConvertAll(r => new SelectListItem()
+            {
+                Value = r.Id.ToString(),
+                Text = r.Name
+            });
+
+            return View("~/Views/Show/Create.cshtml", new CreateReviewViewModel()
+            {
+                MediaItems = mediaSelectItems,
+                ReviewerItems = reviewerSelectItems,
+                MediaTypeId = ShowTypeId
+            });
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateReviewViewModel model, int id, int mediaTypeId)
+        public IActionResult Create(CreateReviewViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var reviewDTO = new CreateReviewDTO(
+                var reviewDto = new CreateReviewDTO(
                     model.Content,
                     model.Score.Value,
                     model.ReviewerId,
                     model.MediaId
                 );
-                _reviewService.Add(reviewDTO);
+                _reviewService.Add(reviewDto);
 
-                return model.MediaTypeId == FilmTypeId ? RedirectToAction(nameof(Films)) : RedirectToAction(nameof(Games));
+                return RedirectToAction(GetIndexActionName(model.MediaTypeId));
             }
 
             PopulateCreateDropdowns(model);
-            return mediaTypeId == FilmTypeId
-                ? View("~/Views/Film/Edit.cshtml", model)
-                : View("~/Views/Game/Edit.cshtml", model);
+            return View(GetCreateViewPath(model.MediaTypeId), model);
         }
 
         private void PopulateCreateDropdowns(CreateReviewViewModel model)
@@ -149,6 +189,7 @@ namespace TheReviewer.Frontend.Controllers
                 Text = r.Name
             });
         }
+
         [HttpGet]
         public IActionResult Edit(int id, int mediaTypeId)
         {
@@ -167,9 +208,7 @@ namespace TheReviewer.Frontend.Controllers
 
             PopulateCreateDropdowns(model);
 
-            return mediaTypeId == FilmTypeId
-                ? View("~/Views/Film/Edit.cshtml", model)
-                : View("~/Views/Game/Edit.cshtml", model);
+            return View(GetEditViewPath(mediaTypeId), model);
         }
 
         [HttpPost]
@@ -188,18 +227,15 @@ namespace TheReviewer.Frontend.Controllers
 
                 _reviewService.Update(updateDto);
 
-                return model.MediaTypeId == FilmTypeId ? RedirectToAction(nameof(Films)) : RedirectToAction(nameof(Games));
+                return RedirectToAction(GetIndexActionName(model.MediaTypeId));
             }
 
             PopulateCreateDropdowns(model);
 
-            return model.MediaTypeId == FilmTypeId
-                ? View("~/Views/Film/Edit.cshtml", model)
-                : View("~/Views/Game/Edit.cshtml", model);
+            return View(GetEditViewPath(model.MediaTypeId), model);
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public IActionResult Delete(int id, int mediaTypeId)
         {
             var review = _reviewService.GetById(id);
@@ -210,9 +246,51 @@ namespace TheReviewer.Frontend.Controllers
 
             _reviewService.Delete(id);
 
-            return mediaTypeId == FilmTypeId
-                ? RedirectToAction(nameof(Films))
-                : RedirectToAction(nameof(Games));
+            return RedirectToAction(GetIndexActionName(mediaTypeId));
+        }
+
+        private string GetDetailsViewPath(int mediaTypeId)
+        {
+            return mediaTypeId switch
+            {
+                FilmTypeId => "~/Views/Film/Details.cshtml",
+                GameTypeId => "~/Views/Game/Details.cshtml",
+                ShowTypeId => "~/Views/Show/Details.cshtml",
+                _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
+            };
+        }
+
+        private string GetCreateViewPath(int mediaTypeId)
+        {
+            return mediaTypeId switch
+            {
+                FilmTypeId => "~/Views/Film/Create.cshtml",
+                GameTypeId => "~/Views/Game/Create.cshtml",
+                ShowTypeId => "~/Views/Show/Create.cshtml",
+                _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
+            };
+        }
+
+        private string GetEditViewPath(int mediaTypeId)
+        {
+            return mediaTypeId switch
+            {
+                FilmTypeId => "~/Views/Film/Edit.cshtml",
+                GameTypeId => "~/Views/Game/Edit.cshtml",
+                ShowTypeId => "~/Views/Show/Edit.cshtml",
+                _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
+            };
+        }
+
+        private string GetIndexActionName(int mediaTypeId)
+        {
+            return mediaTypeId switch
+            {
+                FilmTypeId => nameof(Films),
+                GameTypeId => nameof(Games),
+                ShowTypeId => nameof(Series),
+                _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
+            };
         }
     }
 }
