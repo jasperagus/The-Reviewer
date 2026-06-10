@@ -3,10 +3,10 @@ using TheReviewer.Data.Interfaces;
 
 namespace TheReviewer.Data.Repositories;
 
-public class InMemoryAccountRepository : IAccountRepository
+public class MockAccountRepository : IAccountRepository
 {
     private readonly List<GetAccountDTO> _accounts = [];
-    private int _nextId = 1;
+    private int _currentId = 1;
 
     public GetAccountDTO? GetByEmail(string email)
     {
@@ -17,7 +17,7 @@ public class InMemoryAccountRepository : IAccountRepository
     public GetAccountDTO Create(CreateAccountDTO account)
     {
         var savedAccount = new GetAccountDTO(
-            _nextId++,
+            _currentId++,
             account.Email,
             account.PasswordHash,
             account.Role,

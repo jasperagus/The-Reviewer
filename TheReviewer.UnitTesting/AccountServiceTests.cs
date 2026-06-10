@@ -10,7 +10,7 @@ public class AccountServiceTests
     [Fact]
     public void Create_WithValidDetails_CreatesAccountWithoutReturningPassword()
     {
-        var repository = new InMemoryAccountRepository();
+        var repository = new MockAccountRepository();
         var service = new AccountService(repository);
 
         var result = service.Create("TestUser@example.com", "Password123");
@@ -24,7 +24,7 @@ public class AccountServiceTests
     [Fact]
     public void Create_WithValidDetails_StoresHashedPassword()
     {
-        var repository = new InMemoryAccountRepository();
+        var repository = new MockAccountRepository();
         var service = new AccountService(repository);
 
         service.Create("test@example.com", "Password123");
@@ -38,7 +38,7 @@ public class AccountServiceTests
     [Fact]
     public void Create_WithDuplicateEmail_Fails()
     {
-        var repository = new InMemoryAccountRepository();
+        var repository = new MockAccountRepository();
         var service = new AccountService(repository);
 
         service.Create("test@example.com", "Password123");
@@ -51,7 +51,7 @@ public class AccountServiceTests
     [Fact]
     public void Create_WithInvalidEmail_Fails()
     {
-        var service = new AccountService(new InMemoryAccountRepository());
+        var service = new AccountService(new MockAccountRepository());
 
         var result = service.Create("not-an-email", "Password123");
 
@@ -62,7 +62,7 @@ public class AccountServiceTests
     [Fact]
     public void Create_WithWeakPassword_Fails()
     {
-        var service = new AccountService(new InMemoryAccountRepository());
+        var service = new AccountService(new MockAccountRepository());
 
         var result = service.Create("test@example.com", "password");
 
