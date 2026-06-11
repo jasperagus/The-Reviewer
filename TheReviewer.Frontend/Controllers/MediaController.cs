@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
+using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers
 {
     public class MediaController : Controller
     {
-        private readonly IMediaService _mediaService;
-        private readonly IReviewService _reviewService;
-        private readonly IReviewerService _reviewerService;
+        private readonly MediaService _mediaService;
+        private readonly ReviewService _reviewService;
+        private readonly ReviewerService _reviewerService;
 
         private const int FilmTypeId = 1;
         private const int GameTypeId = 2;
         private const int ShowTypeId = 3;
 
-        public MediaController(IMediaService mediaService, IReviewService reviewService, IReviewerService reviewerService)
+        public MediaController(MediaService mediaService, ReviewService reviewService, ReviewerService reviewerService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;

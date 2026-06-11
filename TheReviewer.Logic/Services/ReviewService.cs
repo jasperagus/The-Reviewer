@@ -27,14 +27,9 @@ public class ReviewService
         )).ToList();
     }
 
-    public void Add(ReviewModel review)
+    public void Add(CreateReviewDTO review)
     {
-        _repository.Add(new CreateReviewDTO(
-            review.Content,
-            review.Rating,
-            review.ReviewerId,
-            review.MediaId
-        ));
+        _repository.Add(review);
     }
 
     public ReviewModel? GetById(int id)
