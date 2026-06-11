@@ -67,7 +67,6 @@ namespace TheReviewer.Data.Repositories
             command.ExecuteNonQuery();
         }
 
-        // New: Get single review by id
         public GetReviewDTO? GetById(int id)
         {
             const string query = "SELECT id, content, rating, reviewer_id, media_id, created_at, updated_at FROM Review WHERE id = @id";
