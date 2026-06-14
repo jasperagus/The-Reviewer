@@ -16,5 +16,17 @@ namespace TheReviewer.Frontend.Models
             Reviews = reviews;
             MediaTypeId = mediaTypeId;
         }
+
+        public string GetAverageScore(int mediaId)
+        {
+            var ratings = Reviews.Where(r => r.MediaId == mediaId).Select(r => r.Rating).ToList();
+
+            if (!ratings.Any())
+            {
+                return "-";
+            }
+
+            return ratings.Average().ToString("0.#");
+        }
     }
 }

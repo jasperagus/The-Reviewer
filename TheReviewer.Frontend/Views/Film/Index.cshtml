@@ -29,6 +29,7 @@
             foreach (var film in Model.Media)
             {
                 var reviewCount = Model.Reviews?.Count(r => r.MediaId == film.Id) ?? 0;
+                var averageScore = Model.GetAverageScore(film.Id);
                 <tr>
                     <td>
                         <a asp-controller="Media" asp-action="Details" asp-route-id="@film.Id" asp-route-mediaTypeId="@Model.MediaTypeId">
@@ -36,7 +37,7 @@
                         </a>
                     </td>
                     <td>@film.Publisher</td>
-                    <td>@(film.Score)</td>
+                    <td>@averageScore</td>
                     <td>@reviewCount</td>
                     <td>
                         <a asp-controller="Review" asp-action="CreateFilm">Add review</a>
