@@ -8,6 +8,7 @@ namespace TheReviewer.Frontend.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["UserName"] = User.Identity?.Name;
             return View();
         }
 

@@ -79,7 +79,7 @@ public class AccountController(IAccountService accountService) : Controller
         {
             new(ClaimTypes.NameIdentifier, account.Id.ToString()),
             new(ClaimTypes.Email, account.Email),
-            new(ClaimTypes.Name, account.Email)
+            new(ClaimTypes.Name, account.Email.Split('@')[0])
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
