@@ -14,14 +14,14 @@ public class MockAccountRepository : IAccountRepository
             string.Equals(account.Email, email, StringComparison.OrdinalIgnoreCase));
     }
 
-    public GetAccountDTO Create(CreateAccountDTO account)
+    public GetAccountDTO Create(AccountModel account)
     {
         var savedAccount = new GetAccountDTO(
             _currentId++,
             account.Email,
             account.PasswordHash,
-            account.Role,
-            account.CreatedAt
+            account.CreatedAt,
+            null
         );
 
         _accounts.Add(savedAccount);

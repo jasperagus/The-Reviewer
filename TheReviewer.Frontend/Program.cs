@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using TheReviewer.Data.Interfaces;
 using TheReviewer.Data.Repositories;
+using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,12 +14,20 @@ if (string.IsNullOrEmpty(connectionString))
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
 
 
 builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(connectionString));
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
 
 builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
+builder.Services.AddScoped<IAccountRepository>(_ => new AccountRepository(connectionString));
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<MediaService>();
 builder.Services.AddScoped<ReviewerService>();
 builder.Services.AddScoped<ReviewService>();
@@ -35,6 +45,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

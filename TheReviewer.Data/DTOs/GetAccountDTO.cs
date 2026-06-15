@@ -4,6 +4,6 @@ public record GetAccountDTO(
     int Id,
     string Email,
     string PasswordHash,
-    string Role,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    DateTime? UpdatedAt
 );

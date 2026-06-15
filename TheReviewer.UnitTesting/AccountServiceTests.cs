@@ -69,4 +69,29 @@ public class AccountServiceTests
         Assert.False(result.Success);
         Assert.Equal(CreateAccountError.WeakPassword, result.Error);
     }
+
+    [Fact]
+    public void Login_WithValidCredentials_ReturnsAccount()
+    {
+        var repository = new MockAccountRepository();
+        var service = new AccountService(repository);
+        service.Create("test@example.com", "Password123");
+
+        var account = service.Login("TEST@example.com", "Password123");
+
+        Assert.NotNull(account);
+        Assert.Equal("test@example.com", account.Email);
+    }
+
+    [Fact]
+    public void Login_WithInvalidPassword_ReturnsNull()
+    {
+        var repository = new MockAccountRepository();
+        var service = new AccountService(repository);
+        service.Create("test@example.com", "Password123");
+
+        var account = service.Login("test@example.com", "WrongPassword123");
+
+        Assert.Null(account);
+    }
 }

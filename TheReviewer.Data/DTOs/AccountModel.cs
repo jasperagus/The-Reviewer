@@ -1,6 +1,6 @@
 namespace TheReviewer.Data.DTOs;
 
-public record CreateAccountDTO(
+public record AccountModel(
     string Email,
     string PasswordHash,
     string Role,
