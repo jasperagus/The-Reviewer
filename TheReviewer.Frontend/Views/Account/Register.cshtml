@@ -1,14 +1,14 @@
-@model TheReviewer.Frontend.Models.LoginViewModel
+@model TheReviewer.Frontend.Models.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Register";
 }
 
 <div class="row justify-content-center">
     <div class="col-md-5">
-        <h1 class="h3 mb-3">Login</h1>
+        <h1 class="h3 mb-3">Register</h1>
 
-        <form asp-action="Login" method="post">
+        <form asp-action="Register" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
@@ -19,12 +19,18 @@
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <input asp-for="Password" class="form-control" autocomplete="new-password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Login</button>
-            <a class="btn btn-link" asp-action="Register">Register</a>
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+            <a class="btn btn-link" asp-action="Login">Login</a>
         </form>
     </div>
 </div>
