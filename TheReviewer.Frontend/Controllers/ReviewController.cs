@@ -1,26 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
+using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers
 {
+    [Authorize]
     public class ReviewController : Controller
     {
         private readonly MediaService _mediaService;
         private readonly ReviewService _reviewService;
-        private readonly ReviewerService _reviewerService;
+        private readonly IAccountService _accountService;
 
         private const int FilmTypeId = 1;
         private const int GameTypeId = 2;
         private const int ShowTypeId = 3;
 
-        public ReviewController(MediaService mediaService, ReviewService reviewService, ReviewerService reviewerService)
+        public ReviewController(
+            MediaService mediaService,
+            ReviewService reviewService,
+            IAccountService accountService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;
-            _reviewerService = reviewerService;
+            _accountService = accountService;
         }
 
         public IActionResult CreateFilm()
@@ -45,12 +52,18 @@ namespace TheReviewer.Frontend.Controllers
 
         private IActionResult CreateForType(int mediaTypeId)
         {
+            var reviewerId = GetLoggedInReviewerId();
+            if (reviewerId is null)
+            {
+                return Challenge();
+            }
+
             var model = new CreateReviewViewModel
             {
                 MediaTypeId = mediaTypeId
             };
 
-            PopulateCreateDropdowns(model);
+            PopulateMediaDropdown(model);
             return View(GetCreateViewPath(mediaTypeId), model);
         }
 
@@ -58,12 +71,18 @@ namespace TheReviewer.Frontend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateReviewViewModel model)
         {
+            var reviewerId = GetLoggedInReviewerId();
+            if (reviewerId is null)
+            {
+                return Challenge();
+            }
+
             if (ModelState.IsValid)
             {
                 var reviewDto = new CreateReviewDTO(
                     model.Content,
                     model.Score!.Value,
-                    model.ReviewerId,
+                    reviewerId.Value,
                     model.MediaId
                 );
                 _reviewService.Add(reviewDto);
@@ -71,42 +90,42 @@ namespace TheReviewer.Frontend.Controllers
                 return RedirectToAction(GetIndexActionName(model.MediaTypeId), "Media");
             }
 
-            PopulateCreateDropdowns(model);
+            PopulateMediaDropdown(model);
             return View(GetCreateViewPath(model.MediaTypeId), model);
         }
 
-        private void PopulateCreateDropdowns(CreateReviewViewModel model)
+        private void PopulateMediaDropdown(CreateReviewViewModel model)
         {
             model.MediaItems = _mediaService.GetByType(model.MediaTypeId).ConvertAll(m => new SelectListItem
             {
                 Value = m.Id.ToString(),
                 Text = m.Name
             });
-
-            model.ReviewerItems = _reviewerService.GetAll().ConvertAll(r => new SelectListItem
-            {
-                Value = r.Id.ToString(),
-                Text = r.Name
-            });
         }
 
         [HttpGet]
         public IActionResult Edit(int id, int mediaTypeId)
         {
+            var reviewerId = GetLoggedInReviewerId();
+            if (reviewerId is null)
+            {
+                return Challenge();
+            }
+
             var review = _reviewService.GetById(id);
             if (review == null) return NotFound();
+            if (review.ReviewerId != reviewerId.Value) return Forbid();
 
             var model = new CreateReviewViewModel
             {
                 Id = review.Id,
                 Content = review.Content,
                 Score = review.Rating,
-                ReviewerId = review.ReviewerId,
                 MediaId = review.MediaId,
                 MediaTypeId = mediaTypeId
             };
 
-            PopulateCreateDropdowns(model);
+            PopulateMediaDropdown(model);
 
             return View(GetEditViewPath(mediaTypeId), model);
         }
@@ -115,13 +134,23 @@ namespace TheReviewer.Frontend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(CreateReviewViewModel model)
         {
+            var reviewerId = GetLoggedInReviewerId();
+            if (reviewerId is null)
+            {
+                return Challenge();
+            }
+
+            var review = _reviewService.GetById(model.Id);
+            if (review == null) return NotFound();
+            if (review.ReviewerId != reviewerId.Value) return Forbid();
+
             if (ModelState.IsValid)
             {
                 var updateDto = new UpdateReviewDTO(
                     model.Id,
                     model.Content,
                     model.Score!.Value,
-                    model.ReviewerId,
+                    reviewerId.Value,
                     model.MediaId ?? 0
                 );
 
@@ -130,7 +159,7 @@ namespace TheReviewer.Frontend.Controllers
                 return RedirectToAction(GetIndexActionName(model.MediaTypeId), "Media");
             }
 
-            PopulateCreateDropdowns(model);
+            PopulateMediaDropdown(model);
 
             return View(GetEditViewPath(model.MediaTypeId), model);
         }
@@ -143,6 +172,17 @@ namespace TheReviewer.Frontend.Controllers
             if (review == null)
             {
                 return NotFound();
+            }
+
+            var reviewerId = GetLoggedInReviewerId();
+            if (reviewerId is null)
+            {
+                return Challenge();
+            }
+
+            if (review.ReviewerId != reviewerId.Value)
+            {
+                return Forbid();
             }
 
             _reviewService.Delete(id);
@@ -181,6 +221,18 @@ namespace TheReviewer.Frontend.Controllers
                 ShowTypeId => "Shows",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
+        }
+
+        private int? GetLoggedInReviewerId()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                return _accountService.GetByEmail(email)?.Id;
+            }
+
+            var reviewerIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(reviewerIdValue, out var reviewerId) ? reviewerId : null;
         }
     }
 }

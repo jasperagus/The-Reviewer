@@ -11,11 +11,9 @@ namespace TheReviewer.Frontend.Models
         [Required(ErrorMessage = "You must enter a score")]
         [Range(0, 100, ErrorMessage = "Score must be between 0 and 100")]
         public int? Score { get; set; }
-        public int ReviewerId { get; set; }
         [Required(ErrorMessage = "Please select an option.")]
         public int? MediaId { get; set; }
         public int MediaTypeId { get; set; }
         public List<SelectListItem> MediaItems { get; set; } = new();
-        public List<SelectListItem> ReviewerItems { get; set; } = new();
     }
 }

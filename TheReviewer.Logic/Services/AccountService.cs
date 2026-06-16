@@ -3,7 +3,6 @@ using TheReviewer.Data.DTOs;
 using TheReviewer.Data.Interfaces;
 using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
-using AccountModel = TheReviewer.Data.DTOs.CreateAccountDTO;
 
 namespace TheReviewer.Logic.Services;
 
@@ -58,6 +57,16 @@ public class AccountService(IAccountRepository repository) : IAccountService
         }
 
         return new Models.AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
+    }
+
+    public Models.AccountModel? GetByEmail(string email)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        var account = repository.GetByEmail(normalizedEmail);
+
+        return account is null
+            ? null
+            : new Models.AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
     }
 
     private static bool IsValidEmail(string email)

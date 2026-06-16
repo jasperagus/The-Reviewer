@@ -5,5 +5,6 @@ namespace TheReviewer.Logic.Interfaces;
 public interface IAccountService
 {
     CreateAccountResult Create(string email, string password);
+    AccountModel? GetByEmail(string email);
     AccountModel? Login(string email, string password);
 }

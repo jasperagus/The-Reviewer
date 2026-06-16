@@ -11,6 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="MediaTypeId" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -20,11 +21,6 @@
                     <option value="">-- Select a show --</option>
                 </select>
                 <span asp-validation-for="MediaId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="ReviewerId" class="control-label">Select a reviewer</label>
-                <select asp-for="ReviewerId" asp-items="Model.ReviewerItems" class="form-control"></select>
             </div>
 
             <div class="form-group mb-3">
