@@ -1,6 +1,5 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TheReviewer.Frontend.Models
@@ -15,7 +14,7 @@ namespace TheReviewer.Frontend.Models
         public int ReviewerId { get; set; }
         [Required(ErrorMessage = "Please select an option.")]
         public int? MediaId { get; set; }
-        public int MediaTypeId { get; set; } // 1 = Film, 2 = Game, 3 = Show
+        public int MediaTypeId { get; set; }
         public List<SelectListItem> MediaItems { get; set; } = new();
         public List<SelectListItem> ReviewerItems { get; set; } = new();
     }

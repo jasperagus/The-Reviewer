@@ -12,7 +12,6 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("Connection string is not configured.");
 }
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -21,10 +20,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Account/Logout";
     });
 
-
 builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(connectionString));
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
-
 builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
 builder.Services.AddScoped<IAccountRepository>(_ => new AccountRepository(connectionString));
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -34,11 +31,9 @@ builder.Services.AddScoped<ReviewService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -54,6 +49,5 @@ app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

@@ -24,81 +24,7 @@ else
 
     @if (Model.Reviews != null && Model.Reviews.Any())
     {
-        <style>
-            .review-row {
-                cursor: pointer;
-                background-color: #f9f9f9;
-            }
-            .review-row:hover {
-                background-color: #f0f0f0;
-            }
-            .review-row td {
-                vertical-align: middle;
-                padding: 12px !important;
-            }
-            .review-dropdown {
-                display: none;
-            }
-            .review-dropdown.show {
-                display: table-row;
-            }
-            .review-content-cell {
-                padding: 10px 16px 8px !important;
-                background-color: #f1f1f1;
-                border: 2px solid #858585;
-                color: #111;
-            }
-            .review-expanded-header {
-                display: grid;
-                grid-template-columns: 1fr auto 1fr;
-                align-items: center;
-                gap: 12px;
-                font-weight: 700;
-                font-size: 0.9rem;
-            }
-            .review-expanded-reviewer {
-                text-align: center;
-                font-size: 0.75rem;
-            }
-            .review-content-text {
-                white-space: pre-wrap;
-                word-wrap: break-word;
-                line-height: 1.1;
-                max-width: 250px;
-                margin-top: 6px;
-                padding-left: 6px;
-                font-weight: 700;
-            }
-            .review-actions {
-                display: flex;
-                justify-content: flex-end;
-                gap: 4px;
-            }
-            .review-actions a,
-            .review-actions button {
-                background: #f1f1f1;
-                border: 2px solid #858585;
-                border-radius: 0;
-                color: #111;
-                font-size: 0.8rem;
-                line-height: 1;
-                padding: 4px 12px;
-                text-decoration: none;
-            }
-            .review-actions a:hover,
-            .review-actions button:hover {
-                background: #e4e4e4;
-                color: #111;
-            }
-            .review-actions form {
-                display: inline-flex;
-            }
-            .review-expanded-score {
-                margin-top: 12px;
-                text-align: center;
-                font-weight: 700;
-            }
-        </style>
+        <partial name="~/Views/Shared/_ReviewDropdownAssets.cshtml" />
 
         <table class="table">
             <thead>
@@ -150,12 +76,6 @@ else
             </tbody>
         </table>
 
-        <script>
-            function toggleReview(reviewId) {
-                const dropdown = document.getElementById(reviewId);
-                dropdown.classList.toggle('show');
-            }
-        </script>
     }
     else
     {

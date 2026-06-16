@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Logic.Models;
 using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers
@@ -27,34 +23,31 @@ namespace TheReviewer.Frontend.Controllers
 
         public IActionResult Films()
         {
-            var media = _mediaService.GetByType(FilmTypeId);
-            var reviewers = _reviewerService.GetAll();
-            var reviews = _reviewService.GetAll();
-
-            return View("~/Views/Film/Index.cshtml", new MediaViewModel(media, reviewers, reviews, FilmTypeId));
+            return IndexForType(FilmTypeId, "~/Views/Film/Index.cshtml");
         }
 
         public IActionResult Shows()
         {
-            return Series();
+            return IndexForType(ShowTypeId, "~/Views/Show/Index.cshtml");
         }
 
         public IActionResult Series()
         {
-            var media = _mediaService.GetByType(ShowTypeId);
-            var reviewers = _reviewerService.GetAll();
-            var reviews = _reviewService.GetAll();
-
-            return View("~/Views/Show/Index.cshtml", new MediaViewModel(media, reviewers, reviews, ShowTypeId));
+            return Shows();
         }
 
         public IActionResult Games()
         {
-            var media = _mediaService.GetByType(GameTypeId);
+            return IndexForType(GameTypeId, "~/Views/Game/Index.cshtml");
+        }
+
+        private IActionResult IndexForType(int mediaTypeId, string viewPath)
+        {
+            var media = _mediaService.GetByType(mediaTypeId);
             var reviewers = _reviewerService.GetAll();
             var reviews = _reviewService.GetAll();
 
-            return View("~/Views/Game/Index.cshtml", new MediaViewModel(media, reviewers, reviews, GameTypeId));
+            return View(viewPath, new MediaViewModel(media, reviewers, reviews, mediaTypeId));
         }
 
         [HttpGet]
@@ -67,7 +60,7 @@ namespace TheReviewer.Frontend.Controllers
             var reviewers = _reviewerService.GetAll();
             var reviews = _reviewService.GetAll().Where(r => r.MediaId == id).ToList();
 
-            var vm = new MediaViewModel(new List<MediaModel> { mediaItem }, reviewers, reviews, mediaTypeId);
+            var vm = new MediaViewModel([mediaItem], reviewers, reviews, mediaTypeId);
 
             return View(GetDetailsViewPath(mediaTypeId), vm);
         }

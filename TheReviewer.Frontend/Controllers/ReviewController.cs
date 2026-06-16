@@ -4,7 +4,6 @@ using TheReviewer.Data.DTOs;
 using TheReviewer.Frontend.Models;
 using TheReviewer.Logic.Services;
 
-
 namespace TheReviewer.Frontend.Controllers
 {
     public class ReviewController : Controller
@@ -26,82 +25,33 @@ namespace TheReviewer.Frontend.Controllers
 
         public IActionResult CreateFilm()
         {
-            var media = _mediaService.GetByType(FilmTypeId);
-            var reviewers = _reviewerService.GetAll();
-
-            var mediaSelectItems = media.ConvertAll(m => new SelectListItem()
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
-
-            var reviewerSelectItems = reviewers.ConvertAll(r => new SelectListItem()
-            {
-                Value = r.Id.ToString(),
-                Text = r.Name
-            });
-
-            return View("~/Views/Film/Create.cshtml", new CreateReviewViewModel()
-            {
-                MediaItems = mediaSelectItems,
-                ReviewerItems = reviewerSelectItems,
-                MediaTypeId = FilmTypeId
-            });
+            return CreateForType(FilmTypeId);
         }
 
         public IActionResult CreateGame()
         {
-            var media = _mediaService.GetByType(GameTypeId);
-            var reviewers = _reviewerService.GetAll();
-
-            var mediaSelectItems = media.ConvertAll(m => new SelectListItem()
-            {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
-
-            var reviewerSelectItems = reviewers.ConvertAll(r => new SelectListItem()
-            {
-                Value = r.Id.ToString(),
-                Text = r.Name
-            });
-
-            return View("~/Views/Game/Create.cshtml", new CreateReviewViewModel()
-            {
-                MediaItems = mediaSelectItems,
-                ReviewerItems = reviewerSelectItems,
-                MediaTypeId = GameTypeId
-            });
+            return CreateForType(GameTypeId);
         }
 
         public IActionResult CreateShow()
         {
-            return CreateSeries();
+            return CreateForType(ShowTypeId);
         }
 
         public IActionResult CreateSeries()
         {
-            var media = _mediaService.GetByType(ShowTypeId);
-            var reviewers = _reviewerService.GetAll();
+            return CreateShow();
+        }
 
-            var mediaSelectItems = media.ConvertAll(m => new SelectListItem()
+        private IActionResult CreateForType(int mediaTypeId)
+        {
+            var model = new CreateReviewViewModel
             {
-                Value = m.Id.ToString(),
-                Text = m.Name
-            });
+                MediaTypeId = mediaTypeId
+            };
 
-            var reviewerSelectItems = reviewers.ConvertAll(r => new SelectListItem()
-            {
-                Value = r.Id.ToString(),
-                Text = r.Name
-            });
-
-            return View("~/Views/Show/Create.cshtml", new CreateReviewViewModel()
-            {
-                MediaItems = mediaSelectItems,
-                ReviewerItems = reviewerSelectItems,
-                MediaTypeId = ShowTypeId
-            });
+            PopulateCreateDropdowns(model);
+            return View(GetCreateViewPath(mediaTypeId), model);
         }
 
         [HttpPost]
@@ -127,16 +77,13 @@ namespace TheReviewer.Frontend.Controllers
 
         private void PopulateCreateDropdowns(CreateReviewViewModel model)
         {
-            var media = _mediaService.GetByType(model.MediaTypeId);
-            var reviewers = _reviewerService.GetAll();
-
-            model.MediaItems = media.ConvertAll(m => new SelectListItem()
+            model.MediaItems = _mediaService.GetByType(model.MediaTypeId).ConvertAll(m => new SelectListItem
             {
                 Value = m.Id.ToString(),
                 Text = m.Name
             });
 
-            model.ReviewerItems = reviewers.ConvertAll(r => new SelectListItem()
+            model.ReviewerItems = _reviewerService.GetAll().ConvertAll(r => new SelectListItem
             {
                 Value = r.Id.ToString(),
                 Text = r.Name
@@ -231,7 +178,7 @@ namespace TheReviewer.Frontend.Controllers
             {
                 FilmTypeId => "Films",
                 GameTypeId => "Games",
-                ShowTypeId => "Series",
+                ShowTypeId => "Shows",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
         }

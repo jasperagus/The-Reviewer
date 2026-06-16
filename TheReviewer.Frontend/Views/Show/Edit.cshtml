@@ -23,7 +23,7 @@
                 </select>
                 <span asp-validation-for="MediaId" class="text-danger"></span>
                         <div>
-                            <a asp-controller="Media" asp-action="Series">Back to List</a>
+                            <a asp-controller="Media" asp-action="Shows">Back to List</a>
                         </div>
                 <label asp-for="ReviewerId" class="control-label">Select a reviewer</label>
                 <select asp-for="ReviewerId" asp-items="Model.ReviewerItems" class="form-control"></select>
@@ -49,7 +49,7 @@
 </div>
 
 <div>
-    <a asp-controller="Media" asp-action="Series">Back to List</a>
+    <a asp-controller="Media" asp-action="Shows">Back to List</a>
 </div>
 
 @section Scripts {
