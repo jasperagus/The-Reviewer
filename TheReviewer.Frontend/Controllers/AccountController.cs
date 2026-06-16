@@ -24,7 +24,7 @@ public class AccountController(IAccountService accountService) : Controller
         {
             return View(model);
         }
-
+        
         var result = accountService.Create(model.Email, model.Password);
         if (!result.Success || result.Account is null)
         {

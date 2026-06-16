@@ -14,7 +14,7 @@ public class MockAccountRepository : IAccountRepository
             string.Equals(account.Email, email, StringComparison.OrdinalIgnoreCase));
     }
 
-    public GetAccountDTO Create(AccountModel account)
+    public GetAccountDTO Create(CreateAccountDTO account)
     {
         var savedAccount = new GetAccountDTO(
             _currentId++,

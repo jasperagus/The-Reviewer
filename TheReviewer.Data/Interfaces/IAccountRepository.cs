@@ -5,5 +5,5 @@ namespace TheReviewer.Data.Interfaces;
 public interface IAccountRepository
 {
     GetAccountDTO? GetByEmail(string email);
-    GetAccountDTO Create(AccountModel account);
+    GetAccountDTO Create(CreateAccountDTO account);
 }

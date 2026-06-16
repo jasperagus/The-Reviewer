@@ -35,7 +35,7 @@ public class AccountRepository(string connectionString) : IAccountRepository
         );
     }
 
-    public GetAccountDTO Create(AccountModel account)
+    public GetAccountDTO Create(CreateAccountDTO account)
     {
         const string query = """
                              INSERT INTO [Account] (email, passwordhash, created_at)

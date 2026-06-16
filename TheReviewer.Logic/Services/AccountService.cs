@@ -3,7 +3,7 @@ using TheReviewer.Data.DTOs;
 using TheReviewer.Data.Interfaces;
 using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
-using AccountModel = TheReviewer.Data.DTOs.AccountModel;
+using AccountModel = TheReviewer.Data.DTOs.CreateAccountDTO;
 
 namespace TheReviewer.Logic.Services;
 
@@ -33,10 +33,9 @@ public class AccountService(IAccountRepository repository) : IAccountService
             return CreateAccountResult.Failed(CreateAccountError.EmailAlreadyExists);
         }
 
-        var account = repository.Create(new AccountModel(
+        var account = repository.Create(new CreateAccountDTO(
             normalizedEmail,
             HashPassword(password),
-            DefaultRole,
             DateTime.UtcNow
         ));
 
