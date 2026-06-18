@@ -83,7 +83,7 @@ namespace TheReviewer.Frontend.Controllers
                     model.Content,
                     model.Score!.Value,
                     reviewerId.Value,
-                    model.MediaId
+                    model.MediaId!.Value
                 );
                 _reviewService.Add(reviewDto);
 
@@ -151,7 +151,7 @@ namespace TheReviewer.Frontend.Controllers
                     model.Content,
                     model.Score!.Value,
                     reviewerId.Value,
-                    model.MediaId ?? 0
+                    model.MediaId!.Value
                 );
 
                 _reviewService.Update(updateDto);

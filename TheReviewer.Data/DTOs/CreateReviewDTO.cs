@@ -4,6 +4,6 @@
         string? Content,
         int Rating,
         int ReviewerId,
-        int? MediaId
+        int MediaId
     );
 }

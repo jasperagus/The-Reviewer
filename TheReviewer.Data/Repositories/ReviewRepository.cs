@@ -29,16 +29,12 @@ namespace TheReviewer.Data.Repositories
             var reviews = new List<GetReviewDTO>();
             while (reader.Read())
             {
-                int? mediaId = reader.IsDBNull(reader.GetOrdinal("media_id"))
-                    ? null
-                    : reader.GetInt32(reader.GetOrdinal("media_id"));
-
                 var review = new GetReviewDTO(
                     reader.GetInt32(reader.GetOrdinal("id")),
                     reader.GetString(reader.GetOrdinal("content")),
                     reader.GetInt32(reader.GetOrdinal("rating")),
                     reader.GetInt32(reader.GetOrdinal("reviewer_id")),
-                    mediaId,
+                    reader.GetInt32(reader.GetOrdinal("media_id")),
                     reader.GetDateTime(reader.GetOrdinal("created_at")),
                     reader.GetDateTime(reader.GetOrdinal("updated_at"))
                 );
@@ -59,7 +55,7 @@ namespace TheReviewer.Data.Repositories
             command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content : string.Empty);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
-            command.Parameters.AddWithValue("@media_id", review.MediaId.HasValue ? (object)review.MediaId.Value : DBNull.Value);
+            command.Parameters.AddWithValue("@media_id", review.MediaId);
             command.Parameters.AddWithValue("@created_at", DateTime.Now);
             command.Parameters.AddWithValue("@updated_at", DateTime.Now);
 
@@ -81,16 +77,12 @@ namespace TheReviewer.Data.Repositories
                 return null;
             }
 
-            int? mediaId = reader.IsDBNull(reader.GetOrdinal("media_id"))
-                ? null
-                : reader.GetInt32(reader.GetOrdinal("media_id"));
-
             var review = new GetReviewDTO(
                 reader.GetInt32(reader.GetOrdinal("id")),
                 reader.GetString(reader.GetOrdinal("content")),
                 reader.GetInt32(reader.GetOrdinal("rating")),
                 reader.GetInt32(reader.GetOrdinal("reviewer_id")),
-                mediaId,
+                reader.GetInt32(reader.GetOrdinal("media_id")),
                 reader.GetDateTime(reader.GetOrdinal("created_at")),
                 reader.GetDateTime(reader.GetOrdinal("updated_at"))
             );
@@ -115,7 +107,7 @@ namespace TheReviewer.Data.Repositories
             command.Parameters.AddWithValue("@content", !string.IsNullOrWhiteSpace(review.Content) ? review.Content : string.Empty);
             command.Parameters.AddWithValue("@rating", review.Rating);
             command.Parameters.AddWithValue("@reviewer_id", review.ReviewerId);
-            command.Parameters.AddWithValue("@media_id", review.MediaId == 0 ? DBNull.Value : (object)review.MediaId);
+            command.Parameters.AddWithValue("@media_id", review.MediaId);
             command.Parameters.AddWithValue("@updated_at", DateTime.Now);
             command.Parameters.AddWithValue("@id", review.Id);
 

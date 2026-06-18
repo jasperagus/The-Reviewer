@@ -15,7 +15,7 @@ namespace TheReviewer.Data.Repositories
 
         public List<GetReviewerDTO> GetAll()
         {
-            const string query = "SELECT id, name, birthdate, created_at, updated_at from Reviewer";
+            const string query = "SELECT id, name, email, passwordhash, birthdate, created_at, updated_at from Reviewer";
 
             using var connection = new SqlConnection(_connectionString);
             using var command = new SqlCommand(query, connection);
@@ -33,9 +33,11 @@ namespace TheReviewer.Data.Repositories
                 var reviewer = new GetReviewerDTO(
                     reader.GetInt32(0),
                     reader.GetString(1),
-                    DateOnly.FromDateTime(reader.GetDateTime(2)),
-                    reader.GetDateTime(3),
-                    reader.GetDateTime(4)
+                    reader.GetString(2),
+                    reader.GetString(3),
+                    DateOnly.FromDateTime(reader.GetDateTime(4)),
+                    reader.GetDateTime(5),
+                    reader.GetDateTime(6)
                 );
 
                 reviewers.Add(reviewer);

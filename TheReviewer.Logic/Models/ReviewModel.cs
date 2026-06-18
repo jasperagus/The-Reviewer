@@ -6,11 +6,11 @@
         public string Content { get; private set; }
         public int Rating { get; private set; }
         public int ReviewerId { get; private set; }
-        public int? MediaId { get; private set; }
+        public int MediaId { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
-        public ReviewModel(int id, string content, int rating, int reviewerId, int? mediaId, DateTime createdAt, DateTime updatedAt)
+        public ReviewModel(int id, string content, int rating, int reviewerId, int mediaId, DateTime createdAt, DateTime updatedAt)
         {
             Id = id;
             Content = content;
@@ -21,7 +21,7 @@
             UpdatedAt = updatedAt;
         }
 
-        public ReviewModel(string content, int rating, int reviewerId, int? mediaId)
+        public ReviewModel(string content, int rating, int reviewerId, int mediaId)
             : this(0, content, rating, reviewerId, mediaId, DateTime.MinValue, DateTime.MinValue)
         {
         }

@@ -17,6 +17,8 @@ public class ReviewerService
         return _repository.GetAll().Select(r => new ReviewerModel(
             r.Id,
             r.Name,
+            r.Email,
+            r.PasswordHash,
             r.Birthdate,
             r.CreatedAt,
             r.UpdatedAt
