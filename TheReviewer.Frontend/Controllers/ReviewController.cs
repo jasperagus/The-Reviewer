@@ -14,16 +14,16 @@ namespace TheReviewer.Frontend.Controllers
     {
         private readonly MediaService _mediaService;
         private readonly ReviewService _reviewService;
-        private readonly AccountService _accountService;
+        private readonly ReviewerService _reviewerService;
 
         public ReviewController(
             MediaService mediaService,
             ReviewService reviewService,
-            AccountService accountService)
+            ReviewerService reviewerService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;
-            _accountService = accountService;
+            _reviewerService = reviewerService;
         }
 
         public IActionResult CreateFilm()
@@ -208,7 +208,7 @@ namespace TheReviewer.Frontend.Controllers
             var email = User.FindFirstValue(ClaimTypes.Email);
             if (!string.IsNullOrWhiteSpace(email))
             {
-                return _accountService.GetByEmail(email)?.Id;
+                return _reviewerService.GetByEmail(email)?.Id;
             }
 
             var reviewerIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);

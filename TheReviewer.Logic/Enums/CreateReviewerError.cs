@@ -1,6 +1,6 @@
 namespace TheReviewer.Logic.Enums;
 
-public enum CreateAccountError
+public enum CreateReviewerError
 {
     InvalidEmail,
     WeakPassword,

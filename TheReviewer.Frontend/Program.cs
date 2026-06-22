@@ -22,10 +22,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(connectionString));
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
 builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
-builder.Services.AddScoped<IAccountRepository>(_ => new AccountRepository(connectionString));
-builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<MediaService>();
 builder.Services.AddScoped<ReviewerService>();
+builder.Services.AddScoped<MediaService>();
 builder.Services.AddScoped<ReviewService>();
 
 var app = builder.Build();
@@ -50,3 +48,4 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
+

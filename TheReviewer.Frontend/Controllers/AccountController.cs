@@ -8,7 +8,7 @@ using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers;
 
-public class AccountController(AccountService accountService) : Controller
+public class AccountController(ReviewerService reviewerService) : Controller
 {
     [HttpGet]
     public IActionResult Register()
@@ -25,16 +25,16 @@ public class AccountController(AccountService accountService) : Controller
             return View(model);
         }
         
-        var result = accountService.Create(model.Email, model.Password);
-        if (!result.Success || result.Account is null)
+        var result = reviewerService.Create(model.Email, model.Password);
+        if (!result.Success || result.Reviewer is null)
         {
-            var errorMessage = result.AddCreateAccountError();
+            var errorMessage = result.AddCreateReviewerError();
             ModelState.AddModelError(string.Empty, errorMessage);
 
             return View(model);
         }
 
-        await SignInAsync(result.Account);
+        await SignInAsync(result.Reviewer);
         return RedirectToAction("Index", "Home");
     }
 
@@ -53,14 +53,14 @@ public class AccountController(AccountService accountService) : Controller
             return View(model);
         }
 
-        var account = accountService.Login(model.Email, model.Password);
-        if (account is null)
+        var reviewer = reviewerService.Login(model.Email, model.Password);
+        if (reviewer is null)
         {
             ModelState.AddModelError(string.Empty, "Invalid email or password");
             return View(model);
         }
 
-        await SignInAsync(account);
+        await SignInAsync(reviewer);
         return RedirectToAction("Index", "Home");
     }
 
@@ -72,13 +72,13 @@ public class AccountController(AccountService accountService) : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    private async Task SignInAsync(AccountModel account)
+    private async Task SignInAsync(ReviewerModel reviewer)
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, account.Id.ToString()),
-            new(ClaimTypes.Email, account.Email),
-            new(ClaimTypes.Name, account.Email.Split('@')[0])
+            new(ClaimTypes.NameIdentifier, reviewer.Id.ToString()),
+            new(ClaimTypes.Email, reviewer.Email),
+            new(ClaimTypes.Name, reviewer.Name)
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -87,3 +87,4 @@ public class AccountController(AccountService accountService) : Controller
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 }
+
