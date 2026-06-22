@@ -1,4 +1,4 @@
-namespace TheReviewer.Logic.Models;
+namespace TheReviewer.Logic.Enums;
 
 public enum CreateAccountError
 {

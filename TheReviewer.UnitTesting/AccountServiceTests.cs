@@ -1,4 +1,5 @@
 using TheReviewer.Data.Repositories;
+using TheReviewer.Logic.Enums;
 using TheReviewer.Logic.Models;
 using TheReviewer.Logic.Services;
 using Xunit;

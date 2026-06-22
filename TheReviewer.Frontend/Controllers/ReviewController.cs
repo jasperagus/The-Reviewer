@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TheReviewer.Data.DTOs;
+using TheReviewer.Frontend.Consts;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers
@@ -14,16 +14,12 @@ namespace TheReviewer.Frontend.Controllers
     {
         private readonly MediaService _mediaService;
         private readonly ReviewService _reviewService;
-        private readonly IAccountService _accountService;
-
-        private const int FilmTypeId = 1;
-        private const int GameTypeId = 2;
-        private const int ShowTypeId = 3;
+        private readonly AccountService _accountService;
 
         public ReviewController(
             MediaService mediaService,
             ReviewService reviewService,
-            IAccountService accountService)
+            AccountService accountService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;
@@ -32,17 +28,17 @@ namespace TheReviewer.Frontend.Controllers
 
         public IActionResult CreateFilm()
         {
-            return CreateForType(FilmTypeId);
+            return CreateForType(MediaTypes.FilmTypeId);
         }
 
         public IActionResult CreateGame()
         {
-            return CreateForType(GameTypeId);
+            return CreateForType(MediaTypes.GameTypeId);
         }
 
         public IActionResult CreateShow()
         {
-            return CreateForType(ShowTypeId);
+            return CreateForType(MediaTypes.ShowTypeId);
         }
 
         public IActionResult CreateSeries()
@@ -53,10 +49,7 @@ namespace TheReviewer.Frontend.Controllers
         private IActionResult CreateForType(int mediaTypeId)
         {
             var reviewerId = GetLoggedInReviewerId();
-            if (reviewerId is null)
-            {
-                return Challenge();
-            }
+            if (reviewerId == null) return Challenge();
 
             var model = new CreateReviewViewModel
             {
@@ -107,10 +100,7 @@ namespace TheReviewer.Frontend.Controllers
         public IActionResult Edit(int id, int mediaTypeId)
         {
             var reviewerId = GetLoggedInReviewerId();
-            if (reviewerId is null)
-            {
-                return Challenge();
-            }
+            if (reviewerId == null) return Challenge();
 
             var review = _reviewService.GetById(id);
             if (review == null) return NotFound();
@@ -135,10 +125,7 @@ namespace TheReviewer.Frontend.Controllers
         public IActionResult Edit(CreateReviewViewModel model)
         {
             var reviewerId = GetLoggedInReviewerId();
-            if (reviewerId is null)
-            {
-                return Challenge();
-            }
+            if (reviewerId == null) return Challenge();
 
             var review = _reviewService.GetById(model.Id);
             if (review == null) return NotFound();
@@ -169,21 +156,14 @@ namespace TheReviewer.Frontend.Controllers
         public IActionResult Delete(int id, int mediaTypeId)
         {
             var review = _reviewService.GetById(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
+            if (review == null) return NotFound();
 
             var reviewerId = GetLoggedInReviewerId();
-            if (reviewerId is null)
-            {
-                return Challenge();
-            }
+            if (reviewerId == null) return Challenge();
+            
 
-            if (review.ReviewerId != reviewerId.Value)
-            {
-                return Forbid();
-            }
+            if (review.ReviewerId != reviewerId.Value) return Forbid();
+            
 
             _reviewService.Delete(id);
 
@@ -194,9 +174,9 @@ namespace TheReviewer.Frontend.Controllers
         {
             return mediaTypeId switch
             {
-                FilmTypeId => "~/Views/Film/Create.cshtml",
-                GameTypeId => "~/Views/Game/Create.cshtml",
-                ShowTypeId => "~/Views/Show/Create.cshtml",
+                MediaTypes.FilmTypeId => "~/Views/Film/Create.cshtml",
+                MediaTypes.GameTypeId => "~/Views/Game/Create.cshtml",
+                MediaTypes.ShowTypeId => "~/Views/Show/Create.cshtml",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
         }
@@ -205,9 +185,9 @@ namespace TheReviewer.Frontend.Controllers
         {
             return mediaTypeId switch
             {
-                FilmTypeId => "~/Views/Film/Edit.cshtml",
-                GameTypeId => "~/Views/Game/Edit.cshtml",
-                ShowTypeId => "~/Views/Show/Edit.cshtml",
+                MediaTypes.FilmTypeId => "~/Views/Film/Edit.cshtml",
+                MediaTypes.GameTypeId => "~/Views/Game/Edit.cshtml",
+                MediaTypes.ShowTypeId => "~/Views/Show/Edit.cshtml",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
         }
@@ -216,9 +196,9 @@ namespace TheReviewer.Frontend.Controllers
         {
             return mediaTypeId switch
             {
-                FilmTypeId => "Films",
-                GameTypeId => "Games",
-                ShowTypeId => "Shows",
+                MediaTypes.FilmTypeId => "Films",
+                MediaTypes.GameTypeId => "Games",
+                MediaTypes.ShowTypeId => "Shows",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
         }

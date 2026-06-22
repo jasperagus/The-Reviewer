@@ -1,12 +1,12 @@
 using System.Security.Cryptography;
 using TheReviewer.Data.DTOs;
 using TheReviewer.Data.Interfaces;
-using TheReviewer.Logic.Interfaces;
+using TheReviewer.Logic.Enums;
 using TheReviewer.Logic.Models;
 
 namespace TheReviewer.Logic.Services;
 
-public class AccountService(IAccountRepository repository) : IAccountService
+public class AccountService(IAccountRepository repository)
 {
     private const string DefaultRole = "User";
     private const int DefaultIterations = 100_000;
@@ -38,15 +38,25 @@ public class AccountService(IAccountRepository repository) : IAccountService
             DateTime.UtcNow
         ));
 
-        return CreateAccountResult.Created(new Models.AccountModel(
+        return CreateAccountResult.Created(new AccountModel(
             account.Id,
             account.Email,
             DefaultRole,
             account.CreatedAt
         ));
     }
+    
+    public AccountModel? GetByEmail(string email)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        var account = repository.GetByEmail(normalizedEmail);
 
-    public Models.AccountModel? Login(string email, string password)
+        return account is null
+            ? null
+            : new AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
+    }
+
+    public AccountModel? Login(string email, string password)
     {
         var normalizedEmail = email.Trim().ToLowerInvariant();
         var account = repository.GetByEmail(normalizedEmail);
@@ -56,17 +66,7 @@ public class AccountService(IAccountRepository repository) : IAccountService
             return null;
         }
 
-        return new Models.AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
-    }
-
-    public Models.AccountModel? GetByEmail(string email)
-    {
-        var normalizedEmail = email.Trim().ToLowerInvariant();
-        var account = repository.GetByEmail(normalizedEmail);
-
-        return account is null
-            ? null
-            : new Models.AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
+        return new AccountModel(account.Id, account.Email, DefaultRole, account.CreatedAt);
     }
 
     private static bool IsValidEmail(string email)

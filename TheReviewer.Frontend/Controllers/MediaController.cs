@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TheReviewer.Frontend.Consts;
 using TheReviewer.Frontend.Models;
 using TheReviewer.Logic.Services;
 
@@ -10,37 +11,13 @@ namespace TheReviewer.Frontend.Controllers
         private readonly ReviewService _reviewService;
         private readonly ReviewerService _reviewerService;
 
-        private const int FilmTypeId = 1;
-        private const int GameTypeId = 2;
-        private const int ShowTypeId = 3;
-
         public MediaController(MediaService mediaService, ReviewService reviewService, ReviewerService reviewerService)
         {
             _mediaService = mediaService;
             _reviewService = reviewService;
             _reviewerService = reviewerService;
         }
-
-        public IActionResult Films()
-        {
-            return IndexForType(FilmTypeId, "~/Views/Film/Index.cshtml");
-        }
-
-        public IActionResult Shows()
-        {
-            return IndexForType(ShowTypeId, "~/Views/Show/Index.cshtml");
-        }
-
-        public IActionResult Series()
-        {
-            return Shows();
-        }
-
-        public IActionResult Games()
-        {
-            return IndexForType(GameTypeId, "~/Views/Game/Index.cshtml");
-        }
-
+        
         private IActionResult IndexForType(int mediaTypeId, string viewPath)
         {
             var media = _mediaService.GetByType(mediaTypeId);
@@ -48,6 +25,21 @@ namespace TheReviewer.Frontend.Controllers
             var reviews = _reviewService.GetAll();
 
             return View(viewPath, new MediaViewModel(media, reviewers, reviews, mediaTypeId));
+        }
+
+        public IActionResult Films()
+        {
+            return IndexForType(MediaTypes.FilmTypeId, "~/Views/Film/Index.cshtml");
+        }
+
+        public IActionResult Shows()
+        {
+            return IndexForType(MediaTypes.ShowTypeId, "~/Views/Show/Index.cshtml");
+        }
+
+        public IActionResult Games()
+        {
+            return IndexForType(MediaTypes.GameTypeId, "~/Views/Game/Index.cshtml");
         }
 
         [HttpGet]
@@ -69,9 +61,9 @@ namespace TheReviewer.Frontend.Controllers
         {
             return mediaTypeId switch
             {
-                FilmTypeId => "~/Views/Film/Details.cshtml",
-                GameTypeId => "~/Views/Game/Details.cshtml",
-                ShowTypeId => "~/Views/Show/Details.cshtml",
+                MediaTypes.FilmTypeId => "~/Views/Film/Details.cshtml",
+                MediaTypes.GameTypeId => "~/Views/Game/Details.cshtml",
+                MediaTypes.ShowTypeId => "~/Views/Show/Details.cshtml",
                 _ => throw new ArgumentOutOfRangeException(nameof(mediaTypeId), "Unsupported media type.")
             };
         }

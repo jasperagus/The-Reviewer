@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TheReviewer.Data.Interfaces;
 using TheReviewer.Data.Repositories;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +23,7 @@ builder.Services.AddScoped<IReviewerRepository>(_ => new ReviewerRepository(conn
 builder.Services.AddScoped<IReviewRepository>(_ => new ReviewRepository(connectionString));
 builder.Services.AddScoped<IMediaRepository>(_ => new MediaRepository(connectionString));
 builder.Services.AddScoped<IAccountRepository>(_ => new AccountRepository(connectionString));
-builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<MediaService>();
 builder.Services.AddScoped<ReviewerService>();
 builder.Services.AddScoped<ReviewService>();

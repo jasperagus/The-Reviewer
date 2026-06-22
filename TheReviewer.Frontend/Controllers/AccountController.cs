@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using TheReviewer.Frontend.Models;
-using TheReviewer.Logic.Interfaces;
 using TheReviewer.Logic.Models;
+using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers;
 
-public class AccountController(IAccountService accountService) : Controller
+public class AccountController(AccountService accountService) : Controller
 {
     [HttpGet]
     public IActionResult Register()
     {
-        return View(new RegisterViewModel());
+        return View();
     }
 
     [HttpPost]
@@ -28,19 +28,20 @@ public class AccountController(IAccountService accountService) : Controller
         var result = accountService.Create(model.Email, model.Password);
         if (!result.Success || result.Account is null)
         {
-            AddCreateAccountError(result.Error);
+            var errorMessage = result.AddCreateAccountError();
+            ModelState.AddModelError(string.Empty, errorMessage);
+
             return View(model);
         }
 
-        await SignIn(result.Account);
-
+        await SignInAsync(result.Account);
         return RedirectToAction("Index", "Home");
     }
 
     [HttpGet]
     public IActionResult Login()
     {
-        return View(new LoginViewModel());
+        return View();
     }
 
     [HttpPost]
@@ -59,8 +60,7 @@ public class AccountController(IAccountService accountService) : Controller
             return View(model);
         }
 
-        await SignIn(account);
-
+        await SignInAsync(account);
         return RedirectToAction("Index", "Home");
     }
 
@@ -69,11 +69,10 @@ public class AccountController(IAccountService accountService) : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
         return RedirectToAction("Index", "Home");
     }
 
-    private async Task SignIn(AccountModel account)
+    private async Task SignInAsync(AccountModel account)
     {
         var claims = new List<Claim>
         {
@@ -86,18 +85,5 @@ public class AccountController(IAccountService accountService) : Controller
         var principal = new ClaimsPrincipal(identity);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-    }
-
-    private void AddCreateAccountError(CreateAccountError? error)
-    {
-        var message = error switch
-        {
-            CreateAccountError.InvalidEmail => "Enter a valid email address",
-            CreateAccountError.WeakPassword => "Password must be at least 8 characters and include uppercase, lowercase, and a number",
-            CreateAccountError.EmailAlreadyExists => "An account with this email already exists",
-            _ => "Could not create account"
-        };
-
-        ModelState.AddModelError(string.Empty, message);
     }
 }
