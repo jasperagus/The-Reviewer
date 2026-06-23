@@ -8,7 +8,7 @@ using TheReviewer.Logic.Services;
 
 namespace TheReviewer.Frontend.Controllers;
 
-public class AccountController(ReviewerService reviewerService) : Controller
+public class IdentityController(ReviewerService reviewerService) : Controller
 {
     [HttpGet]
     public IActionResult Register()
