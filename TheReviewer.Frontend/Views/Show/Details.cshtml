@@ -15,6 +15,8 @@ else
 {
     var show = Model.Media.First();
     var averageScore = Model.GetAverageScore(show.Id);
+    var loggedInReviewerIdValue = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var hasLoggedInReviewerId = int.TryParse(loggedInReviewerIdValue, out var loggedInReviewerId);
     <h1>@show.Name</h1>
     <p><strong>Publisher:</strong> @show.Publisher</p>
     <p><strong>Avg score:</strong> @averageScore</p>
@@ -39,6 +41,7 @@ else
                 {
                     var reviewer = Model.Reviewers?.FirstOrDefault(r => r.Id == review.ReviewerId);
                     var reviewId = "review-" + review.Id;
+                    var canManageReview = hasLoggedInReviewerId && review.ReviewerId == loggedInReviewerId;
                     <tr class="review-row" onclick="toggleReview('@reviewId')">
                         <td>@show.Name</td>
                         <td>@(reviewer?.Name ?? "Unknown")</td>
@@ -50,22 +53,25 @@ else
                                 <div class="review-expanded-header">
                                     <div>@show.Name</div>
                                     <div class="review-expanded-reviewer">@(reviewer?.Name ?? "Unknown")</div>
-                                    <div class="review-actions">
-                                        <a asp-controller="Review"
-                                           asp-action="Edit"
-                                           asp-route-id="@review.Id"
-                                           asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
+                                    @if (canManageReview)
+                                    {
+                                        <div class="review-actions">
+                                            <a asp-controller="Review"
+                                               asp-action="Edit"
+                                               asp-route-id="@review.Id"
+                                               asp-route-mediaTypeId="@Model.MediaTypeId">Edit</a>
 
-                                        <form asp-controller="Review"
-                                              asp-action="Delete"
-                                              asp-route-id="@review.Id"
-                                              asp-route-mediaTypeId="@Model.MediaTypeId"
-                                              method="post"
-                                              onsubmit="event.stopPropagation(); return confirm('Are you sure you want to delete this review?');">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit">Delete</button>
-                                        </form>
-                                    </div>
+                                            <form asp-controller="Review"
+                                                  asp-action="Delete"
+                                                  asp-route-id="@review.Id"
+                                                  asp-route-mediaTypeId="@Model.MediaTypeId"
+                                                  method="post"
+                                                  onsubmit="event.stopPropagation(); return confirm('Are you sure you want to delete this review?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit">Delete</button>
+                                            </form>
+                                        </div>
+                                    }
                                 </div>
                                 <div class="review-content-text">@review.Content</div>
                                 <div class="review-expanded-score">@review.Rating/10</div>

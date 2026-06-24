@@ -104,7 +104,7 @@ namespace TheReviewer.Frontend.Controllers
 
             var review = _reviewService.GetById(id);
             if (review == null) return NotFound();
-            if (review.ReviewerId != reviewerId.Value) return Forbid();
+            if (review.ReviewerId != reviewerId.Value) return ForbiddenReload();
 
             var model = new CreateReviewViewModel
             {
@@ -129,7 +129,7 @@ namespace TheReviewer.Frontend.Controllers
 
             var review = _reviewService.GetById(model.Id);
             if (review == null) return NotFound();
-            if (review.ReviewerId != reviewerId.Value) return Forbid();
+            if (review.ReviewerId != reviewerId.Value) return ForbiddenReload();
 
             if (ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace TheReviewer.Frontend.Controllers
             if (reviewerId == null) return Challenge();
             
 
-            if (review.ReviewerId != reviewerId.Value) return Forbid();
+            if (review.ReviewerId != reviewerId.Value) return ForbiddenReload();
             
 
             _reviewService.Delete(id);
@@ -213,6 +213,26 @@ namespace TheReviewer.Frontend.Controllers
 
             var reviewerIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.TryParse(reviewerIdValue, out var reviewerId) ? reviewerId : null;
+        }
+
+        private IActionResult ForbiddenReload()
+        {
+            TempData["ForbiddenMessage"] = "you are not allowed to do that!";
+
+            var referer = Request.Headers.Referer.ToString();
+            if (!string.IsNullOrWhiteSpace(referer) && Url.IsLocalUrl(referer))
+            {
+                return Redirect(referer);
+            }
+
+            if (Uri.TryCreate(referer, UriKind.Absolute, out var refererUri) &&
+                string.Equals(refererUri.Host, Request.Host.Host, StringComparison.OrdinalIgnoreCase) &&
+                refererUri.Port == Request.Host.Port)
+            {
+                return Redirect(refererUri.PathAndQuery);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

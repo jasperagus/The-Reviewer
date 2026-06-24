@@ -55,6 +55,12 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["ForbiddenMessage"] is string forbiddenMessage)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @forbiddenMessage
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
